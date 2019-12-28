@@ -10,12 +10,13 @@ public class StudentChess {
 
     public static void main(String[] args) {
         //   1. Création du contrôleur pour gérer le jeu d’échec
-        ChessController controller = new GameController();
+        ChessController gameController = new GameController();
         // 2. Création de la vue désirer
-        ChessView view = new GUIView(controller);
+        ChessView guiView = new GUIView(gameController);
         // ou:
-        ConsoleView cView = new ConsoleView(controller);
+        ConsoleView consoleView = new ConsoleView(gameController);
         // 3. Lancement du jeu
-        controller.start(view);
+        gameController.start(guiView);
+        gameController.start(consoleView);
     }
 }

@@ -93,7 +93,7 @@
       <workItem from="1576484352761" duration="1074000" />
       <workItem from="1577361914330" duration="3062000" />
       <workItem from="1577369367261" duration="19755000" />
-      <workItem from="1577467163948" duration="6769000" />
+      <workItem from="1577467163948" duration="10444000" />
     </task>
     <servers />
   </component>
@@ -110,5 +110,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/engine/GameController.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

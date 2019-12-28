@@ -13,6 +13,7 @@ public class GameController implements ChessController {
     private Stack coupJouee;  // Pour avoir l'historic des coups
     ChessView view;
     // TODO : Un tableau 8x8 Point
+    public Piece[][] echequier;
     //.. ici...
 
     // TODO : pas sur la... tout ces objets . test
@@ -37,6 +38,8 @@ public class GameController implements ChessController {
     // Init game
     public void init_Game(ChessView view){
         coupJouee       = new Stack();
+        echequier       = new Piece[8][8];
+
         tour1Blanc      = new Tour(PlayerColor.WHITE, PieceType.ROOK, new Point(0, 0), 1);
         tour2Blanc      = new Tour(PlayerColor.WHITE, PieceType.ROOK, new Point(7 , 0), 2);
         cavalier1Blanc  = new Cavalier(PlayerColor.WHITE, PieceType.KNIGHT, new Point(1 , 0), 1);
@@ -70,6 +73,40 @@ public class GameController implements ChessController {
         pion6Noir       = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(5 , 6), 6);
         pion7Noir       = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(6 , 6), 7);
         pion8Noir       = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(7 , 6), 8);
+
+        echequier[0][0] = tour1Blanc;
+        echequier[7][0] = tour2Blanc;
+        echequier[1][0] = cavalier1Blanc;
+        echequier[6][0] = cavalier2Blanc;
+        echequier[2][0] = fou1Blanc;
+        echequier[5][0] = fou2Blanc;
+        echequier[3][0] = DameBlanc;
+        echequier[4][0] = RoiBlanc;
+        echequier[0][1] = pion1Blanc;
+        echequier[1][1] = pion2Blanc;
+        echequier[2][1] = pion3Blanc;
+        echequier[3][1] = pion4Blanc;
+        echequier[4][1] = pion5Blanc;
+        echequier[5][1] = pion6Blanc;
+        echequier[6][1] = pion7Blanc;
+        echequier[7][1] = pion8Blanc;
+
+        echequier[0][7] = tour1Noir;
+        echequier[7][7] = tour2Noir;
+        echequier[1][7] = cavalier1Noir;
+        echequier[6][7] = cavalier2Noir;
+        echequier[2][7] = fou1Noir;
+        echequier[5][7] = fou2Noir;
+        echequier[3][7] = DameNoir;
+        echequier[4][7] = RoiNoir;
+        echequier[0][6] = pion1Noir;
+        echequier[1][6] = pion2Noir;
+        echequier[2][6] = pion3Noir;
+        echequier[3][6] = pion4Noir;
+        echequier[4][6] = pion5Noir;
+        echequier[5][6] = pion6Noir;
+        echequier[6][6] = pion7Noir;
+        echequier[7][6] = pion8Noir;
 
         view.putPiece(tour1Blanc.getPieceType(), tour1Blanc.getCouleur(), tour1Blanc.getPosition().x, tour1Blanc.getPosition().y);
         view.putPiece(tour2Blanc.getPieceType(), tour2Blanc.getCouleur(), tour2Blanc.getPosition().x, tour2Blanc.getPosition().y);
@@ -144,7 +181,12 @@ public class GameController implements ChessController {
 
     @Override
     public boolean move(int fromX, int fromY, int toX, int toY) {
+        Piece pieceABouger = echequier[fromX][fromY];
         view.removePiece(fromX, fromY);
+        pieceABouger.setPosition(new Point(toX, toY));
+        view.putPiece(pieceABouger.getPieceType(), pieceABouger.getCouleur(), pieceABouger.getPosition().x, pieceABouger.getPosition().y);
+        echequier[fromX][fromY] = null;
+        echequier[toX][toY] = pieceABouger;
 
         return true;
     }
