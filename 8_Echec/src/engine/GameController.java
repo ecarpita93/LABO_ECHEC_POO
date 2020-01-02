@@ -12,16 +12,11 @@ public class GameController implements ChessController {
 
     private Stack coupJouee;  // Pour avoir l'historic des coups
     ChessView view;
+    private int turn;
 
     // TODO : Un tableau 8x8 Point
     public Piece[][] echequier;
-    private whiteTurn;
 
-    // TODO : pas sur la... tout ces objets . test
-    Piece tour1Blanc, tour2Blanc, cavalier1Blanc, cavalier2Blanc, fou1Blanc, fou2Blanc, DameBlanc, RoiBlanc;
-    Piece pion1Blanc, pion2Blanc, pion3Blanc, pion4Blanc, pion5Blanc, pion6Blanc, pion7Blanc, pion8Blanc;
-    Piece tour1Noir, tour2Noir, cavalier1Noir, cavalier2Noir, fou1Noir, fou2Noir, DameNoir, RoiNoir;
-    Piece pion1Noir, pion2Noir, pion3Noir, pion4Noir, pion5Noir, pion6Noir, pion7Noir, pion8Noir;
 
     public GameController() {
 
@@ -41,39 +36,47 @@ public class GameController implements ChessController {
         coupJouee = new Stack();
         echequier = new Piece[8][8];
 
-        tour1Blanc = new Tour(PlayerColor.WHITE, PieceType.ROOK, new Point(0, 0), 1);
-        tour2Blanc = new Tour(PlayerColor.WHITE, PieceType.ROOK, new Point(7, 0), 2);
-        cavalier1Blanc = new Cavalier(PlayerColor.WHITE, PieceType.KNIGHT, new Point(1, 0), 1);
-        cavalier2Blanc = new Cavalier(PlayerColor.WHITE, PieceType.KNIGHT, new Point(6, 0), 2);
-        fou1Blanc = new Fou(PlayerColor.WHITE, PieceType.BISHOP, new Point(2, 0), 1);
-        fou2Blanc = new Fou(PlayerColor.WHITE, PieceType.BISHOP, new Point(5, 0), 2);
-        DameBlanc = new Dame(PlayerColor.WHITE, PieceType.QUEEN, new Point(3, 0), 1);
-        RoiBlanc = new Roi(PlayerColor.WHITE, PieceType.KING, new Point(4, 0), 1);
-        pion1Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(0, 1), 1);
-        pion2Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(1, 1), 2);
-        pion3Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(2, 1), 3);
-        pion4Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(3, 1), 4);
-        pion5Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(4, 1), 5);
-        pion6Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(5, 1), 6);
-        pion7Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(6, 1), 7);
-        pion8Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(7, 1), 8);
+        Piece tour1Blanc = new Tour(PlayerColor.WHITE, PieceType.ROOK, new Point(0, 0), 1);
+        Piece tour2Blanc = new Tour(PlayerColor.WHITE, PieceType.ROOK, new Point(7, 0), 2);
 
-        tour1Noir = new Tour(PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7), 1);
-        tour2Noir = new Tour(PlayerColor.BLACK, PieceType.ROOK, new Point(7, 7), 2);
-        cavalier1Noir = new Cavalier(PlayerColor.BLACK, PieceType.KNIGHT, new Point(1, 7), 1);
-        cavalier2Noir = new Cavalier(PlayerColor.BLACK, PieceType.KNIGHT, new Point(6, 7), 2);
-        fou1Noir = new Fou(PlayerColor.BLACK, PieceType.BISHOP, new Point(2, 7), 1);
-        fou2Noir = new Fou(PlayerColor.BLACK, PieceType.BISHOP, new Point(5, 7), 2);
-        DameNoir = new Dame(PlayerColor.BLACK, PieceType.QUEEN, new Point(3, 7), 1);
-        RoiNoir = new Roi(PlayerColor.BLACK, PieceType.KING, new Point(4, 7), 1);
-        pion1Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(0, 6), 1);
-        pion2Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(1, 6), 2);
-        pion3Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(2, 6), 3);
-        pion4Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(3, 6), 4);
-        pion5Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(4, 6), 5);
-        pion6Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(5, 6), 6);
-        pion7Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(6, 6), 7);
-        pion8Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(7, 6), 8);
+        Piece cavalier1Blanc = new Cavalier(PlayerColor.WHITE, PieceType.KNIGHT, new Point(1, 0), 1);
+        Piece cavalier2Blanc = new Cavalier(PlayerColor.WHITE, PieceType.KNIGHT, new Point(6, 0), 2);
+
+        Piece fou1Blanc = new Fou(PlayerColor.WHITE, PieceType.BISHOP, new Point(2, 0), 1);
+        Piece fou2Blanc = new Fou(PlayerColor.WHITE, PieceType.BISHOP, new Point(5, 0), 2);
+
+        Piece DameBlanc = new Dame(PlayerColor.WHITE, PieceType.QUEEN, new Point(3, 0), 1);
+        Piece RoiBlanc = new Roi(PlayerColor.WHITE, PieceType.KING, new Point(4, 0), 1);
+
+        Piece pion1Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(0, 1), 1);
+        Piece pion2Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(1, 1), 2);
+        Piece pion3Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(2, 1), 3);
+        Piece pion4Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(3, 1), 4);
+        Piece pion5Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(4, 1), 5);
+        Piece pion6Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(5, 1), 6);
+        Piece pion7Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(6, 1), 7);
+        Piece pion8Blanc = new Pion(PlayerColor.WHITE, PieceType.PAWN, new Point(7, 1), 8);
+
+        Piece tour1Noir = new Tour(PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7), 1);
+        Piece tour2Noir = new Tour(PlayerColor.BLACK, PieceType.ROOK, new Point(7, 7), 2);
+
+        Piece cavalier1Noir = new Cavalier(PlayerColor.BLACK, PieceType.KNIGHT, new Point(1, 7), 1);
+        Piece cavalier2Noir = new Cavalier(PlayerColor.BLACK, PieceType.KNIGHT, new Point(6, 7), 2);
+
+        Piece fou1Noir = new Fou(PlayerColor.BLACK, PieceType.BISHOP, new Point(2, 7), 1);
+        Piece fou2Noir = new Fou(PlayerColor.BLACK, PieceType.BISHOP, new Point(5, 7), 2);
+
+        Piece DameNoir = new Dame(PlayerColor.BLACK, PieceType.QUEEN, new Point(3, 7), 1);
+        Piece RoiNoir = new Roi(PlayerColor.BLACK, PieceType.KING, new Point(4, 7), 1);
+
+        Piece pion1Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(0, 6), 1);
+        Piece pion2Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(1, 6), 2);
+        Piece pion3Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(2, 6), 3);
+        Piece pion4Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(3, 6), 4);
+        Piece pion5Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(4, 6), 5);
+        Piece pion6Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(5, 6), 6);
+        Piece pion7Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(6, 6), 7);
+        Piece pion8Noir = new Pion(PlayerColor.BLACK, PieceType.PAWN, new Point(7, 6), 8);
 
         echequier[0][0] = tour1Blanc;
         echequier[7][0] = tour2Blanc;
@@ -186,16 +189,24 @@ public class GameController implements ChessController {
 
         Piece pieceABouger = echequier[fromX][fromY];
 
+
         if (pieceABouger != null) {
-            if (pieceABouger.canMoveTo(toX, toY)) {
-                view.removePiece(fromX, fromY);
-                pieceABouger.setPosition(new Point(toX, toY));
-                view.putPiece(pieceABouger.getPieceType(), pieceABouger.getCouleur(), pieceABouger.getPosition().x, pieceABouger.getPosition().y);
-                echequier[fromX][fromY] = null;
-                echequier[toX][toY] = pieceABouger;
-                return true;
-            }
+                if (pieceABouger.couleur == PlayerColor.values()[turn % 2]) {
+                    if (pieceABouger.canMoveTo(toX, toY)) {
+                        view.removePiece(fromX, fromY);
+                        pieceABouger.setPosition(new Point(toX, toY));
+                        view.putPiece(pieceABouger.getPieceType(), pieceABouger.getCouleur(), pieceABouger.getPosition().x, pieceABouger.getPosition().y);
+
+                        echequier[fromX][fromY] = null;
+                        echequier[toX][toY] = pieceABouger;
+                        turn++;
+                        return true;
+                    }
+                }
         }
+
+
+
         return false;
     }
 

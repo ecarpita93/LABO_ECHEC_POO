@@ -11,7 +11,7 @@ public abstract class Piece {
     public Point position;          // Position de la pièce
     public int pieceID;             // Pour différencier les pièces d'une même couleur. 2Tours, 2Fous, 8pions ...
 
-    private Point diagonalMatrix[] = {new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1)};
+    private Point[] diagonalMatrix = {new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1)};
 
     // Constructeur
     public Piece(PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
@@ -23,22 +23,15 @@ public abstract class Piece {
 
     public abstract boolean canMoveTo(int toX, int toY);
 
-    public boolean checkVerticalMove(int toX) {
-        if (position.getX() == toX) {
-            return true;
-        }
-        return false;
+    boolean checkVerticalMove(int toX) {
+        return position.getX() == toX;
     }
 
-    public boolean checkHorizontalMove(int toY) {
-        if (position.getY() == toY) {
-            return true;
-        }
-        return false;
+    boolean checkHorizontalMove(int toY) {
+        return position.getY() == toY;
     }
 
-    public boolean checkDiagonalMove(int toX, int toY) {
-
+    boolean checkDiagonalMove(int toX, int toY) {
         for (int i = 0; i < 4; i++) {
             Point diagonal = diagonalMatrix[i];
             Point tester = new Point(position);
