@@ -17,6 +17,6 @@ public class StudentChess {
         ConsoleView consoleView = new ConsoleView(gameController);
         // 3. Lancement du jeu
         gameController.start(guiView);
-        gameController.start(consoleView);
+        //gameController.start(consoleView);
     }
 }
