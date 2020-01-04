@@ -6,8 +6,8 @@ import chess.PlayerColor;
 import java.awt.*;
 
 public class Tour extends Piece {
-    public Tour(PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
-        super(couleur, pieceType, position, pieceID);
+    public Tour(ChessBoard chessboard, PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
+        super(chessboard, couleur, pieceType, position, pieceID);
     }
 
     @Override

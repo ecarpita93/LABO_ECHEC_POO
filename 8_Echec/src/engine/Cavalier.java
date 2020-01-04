@@ -6,8 +6,8 @@ import chess.PlayerColor;
 import java.awt.*;
 
 public class Cavalier extends Piece {
-    public Cavalier(PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
-        super(couleur, pieceType, position, pieceID);
+    public Cavalier(ChessBoard chessboard, PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
+        super(chessboard, couleur, pieceType, position, pieceID);
     }
 
     @Override

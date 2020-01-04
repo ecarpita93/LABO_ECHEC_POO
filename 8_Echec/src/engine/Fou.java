@@ -6,8 +6,8 @@ import chess.PlayerColor;
 import java.awt.*;
 
 public class Fou extends Piece  {
-    public Fou(PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
-        super(couleur, pieceType, position, pieceID);
+    public Fou(ChessBoard chessboard, PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
+        super(chessboard, couleur, pieceType, position, pieceID);
     }
 
     @Override
@@ -17,9 +17,5 @@ public class Fou extends Piece  {
        }
        return false;
     }
-
-
-
-
 
 }
