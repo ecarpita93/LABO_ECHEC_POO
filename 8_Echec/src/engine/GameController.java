@@ -43,7 +43,6 @@ public class GameController implements ChessController {
         if (checkForCheck()){
             view.displayMessage("Check!");
             chessboard.updateBoardMoves();
-
         }
 
         game_turn++;
@@ -73,6 +72,7 @@ public class GameController implements ChessController {
             for (Point possible_eats : piece.getPossibleEats()){
                 if (other_player_king.getPosition().getX() == possible_eats.getX() && other_player_king.getPosition().getY() == possible_eats.getY()){
                     chessboard.setCheck(other_player, true);
+                    //chessboard.calculateCheckPath(other_player_king, piece);
                     return true;
                 }
             }

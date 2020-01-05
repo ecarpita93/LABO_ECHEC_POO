@@ -9,9 +9,9 @@ import java.util.ArrayList;
 public abstract class Piece {
 
     protected ChessBoard chessboard;
-    public PlayerColor player;     // Couleur blanc ou noir
+    public PlayerColor player;       // Couleur blanc ou noir
     public PieceType piece_type;     // Type de la pièce
-    public Point position;          // Position de la pièce
+    public Point position;           // Position de la pièce
     public int piece_ID;             // Pour différencier les pièces d'une même couleur. 2Tours, 2Fous, 8pions ...
     ArrayList<Point> possible_moves;
 

@@ -17,6 +17,7 @@ public class ChessBoard {
     private boolean white_check;
     private boolean black_check;
     private ChessView view;
+    private ArrayList<Point> checkPath;
 
 
     public ChessBoard() {
@@ -89,8 +90,24 @@ public class ChessBoard {
             if (((Pawn) piece).getFirstMove()) {
                 ((Pawn) piece).setFirstMove(false);
             }
+            if (((Pawn) piece).canBePromoted()) {
+                promotePawn((Pawn) piece);
+            }
         }
         view.putPiece(piece.getPiece_type(), piece.getPlayer(), piece.getPosition().x, piece.getPosition().y);
+    }
+
+    public void promotePawn(Pawn pawn_to_promote) {
+        ChessView.UserChoice user = new ChessView.UserChoice() {
+            @Override
+            public String textValue() {
+                return "king me!";
+            }
+        };
+        System.out.println("promoting");
+        view.askUser("Pawn prmottion", "how should be promoted", user);
+        System.out.println("promoting");
+
     }
 
     public void removePieceFromPosition(int x, int y) {
@@ -113,6 +130,10 @@ public class ChessBoard {
             white_pieces.remove(piece);
         }
     }
+
+//    public void calculateCheckPath(Piece king_under_check, Piece opponent_piece){
+//        checkPath.add(new Point((int)opponent_piece.getPosition().getX(), (int)opponent_piece.getPosition().getY())); // the first value is the same as the origin
+//    }
 
     public ArrayList<Piece> getWhite_pieces() {
         return white_pieces;

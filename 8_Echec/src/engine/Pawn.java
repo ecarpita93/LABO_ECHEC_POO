@@ -19,6 +19,9 @@ public class Pawn extends Piece {
         vector = this.player == PlayerColor.BLACK ? -1 : 1;
     }
 
+    public boolean canBePromoted(){
+        return position.getY() == 7 || position.getY() == 0;
+    }
 
     private void checkPawnMoves() {
         for (Point other : pawnMoveMatrix) {
