@@ -61,8 +61,10 @@ public class GameController implements ChessController {
         Piece piece_at_new_position = chessboard.getPieceAtPosition(toX, toY);
 
         if (piece_to_move != null && piece_to_move.getPlayer() == currentPlayer) {
+            piece_to_move.calculatePossibleMoves();
+
             if (piece_at_new_position != null) {
-                if (piece_at_new_position.getPlayer() != currentPlayer && piece_to_move.canEatTo(piece_at_new_position)) {
+                if (piece_to_move.canEatTo(toX, toY)) {
                     moveAndEat(piece_to_move, piece_at_new_position, fromX, fromY, toX, toY);
                     return true;
                 }

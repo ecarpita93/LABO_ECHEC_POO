@@ -10,37 +10,56 @@ public class Pion extends Piece {
     private boolean firstMove;
     private int vector;
 
+    private Point[] pawnMoveMatrix = {new Point(0, 1), new Point(0, 2)};
+    private Point[] pawnEatMatrix = {new Point(1, 1), new Point(-1, 1)};
+
     public Pion(ChessBoard chessboard, PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
         super(chessboard, couleur, pieceType, position, pieceID);
         firstMove = true;
         vector = this.player == PlayerColor.BLACK ? -1 : 1;
     }
 
-    private boolean checkForClearPath(int x, int y) {
-        return chessboard.getPieceAtPosition(x, y) == null;
-    }
 
-    @Override
-    public boolean canMoveTo(int toX, int toY) {
-
-        if (checkVerticalMove(toX)) {
-           // if (checkForClearPath(toX, toY)) {
-                if ((toY - position.getY()) * vector == 2 && firstMove) {
-                    firstMove = false;
-                    return true;
-                }
-
-                if ((toY - position.getY()) * vector == 1) {
-                    return true;
+    private void checkPawnMoves() {
+        for (Point other : pawnMoveMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
+            tester.translate((int) other.getX(), (int) other.getY() * vector);
+            if (chessboard.checkPositionInBoardLimits(tester)) {
+                obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
+                if (obstacle == null) {
+                    possible_moves.add(new Point(tester));
                 }
             }
-       // }
-        return false;
+
+            if (firstMove) {
+                firstMove = false;
+            } else {
+                break;
+            }
+        }
     }
 
+    private void checkPawnEats() {
+        for (Point other : pawnEatMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
+            tester.translate((int) other.getX(), (int) other.getY() * vector);
+            if (chessboard.checkPositionInBoardLimits(tester)) {
+                obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
+                if (obstacle != null && obstacle.getPlayer() != this.player) {
+                    possible_eats.add(new Point(tester));
+                }
+            }
+        }
+    }
+
+
     @Override
-    public boolean canEatTo(Piece piece_to_eat) {
-        return Math.abs(position.getX() - piece_to_eat.position.getX()) <= 1 &&
-                Math.abs(position.getY() - piece_to_eat.position.getY()) <= 1;
+    public void calculatePossibleMoves() {
+        super.calculatePossibleMoves();
+        checkPawnMoves();
+        checkPawnEats();
+
     }
 }

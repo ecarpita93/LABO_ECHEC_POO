@@ -4,6 +4,7 @@ import chess.PieceType;
 import chess.PlayerColor;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public abstract class Piece {
 
@@ -12,8 +13,12 @@ public abstract class Piece {
     public PieceType pieceType;     // Type de la pièce
     public Point position;          // Position de la pièce
     public int pieceID;             // Pour différencier les pièces d'une même couleur. 2Tours, 2Fous, 8pions ...
+    ArrayList<Point> possible_moves;
+    ArrayList<Point> possible_eats;
 
     private Point[] diagonalMatrix = {new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1)};
+    private Point[] verticalMatrix = {new Point(0, 1), new Point(0, -1)};
+    private Point[] horizontalMatrix = {new Point(1, 0), new Point(-1, 0)};
 
     // Constructeur
     public Piece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int piece_ID) {
@@ -22,15 +27,38 @@ public abstract class Piece {
         this.pieceType = piece_type;
         this.position = position;
         this.pieceID = piece_ID;
+
+        possible_moves = new ArrayList<>();
+        possible_eats = new ArrayList<>();
         addPieceIntoGame();
     }
 
-    public abstract boolean canMoveTo(int toX, int toY);
-
-    public boolean canEatTo(Piece piece_to_eat) {
-        return this.canMoveTo((int) piece_to_eat.getPosition().getX(), (int) piece_to_eat.getPosition().getY());
+    private void resetMovesArrays() {
+        possible_moves.clear();
+        possible_eats.clear();
     }
 
+    public void calculatePossibleMoves() {
+        resetMovesArrays();
+    }
+
+    public boolean canMoveTo(int toX, int toY) {
+        for (Point possible_move : possible_moves) {
+            if (possible_move.getX() == toX && possible_move.getY() == toY) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canEatTo(int toX, int toY) {
+        for (Point possible_eat : possible_eats) {
+            if (possible_eat.getX() == toX && possible_eat.getY() == toY) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void removePieceFromGame() {
         System.out.println(pieceType + " has been eaten");
@@ -43,32 +71,81 @@ public abstract class Piece {
         chessboard.setPieceAtPosition(this, (int) position.getX(), (int) position.getY());
     }
 
-    boolean checkVerticalMove(int toX) {
-        return position.getX() == toX;
-    }
-
-    boolean checkHorizontalMove(int toY) {
-        return position.getY() == toY;
-    }
-
-    boolean checkDiagonalMove(int toX, int toY) {
-        for (int i = 0; i < 4; i++) {
+    void checkHorizontalMovesAndEats() {
+        for (Point horizontal : horizontalMatrix) {
             Piece obstacle;
-            Point diagonal = diagonalMatrix[i];
             Point tester = new Point(position);
             do {
-                tester.translate((int) diagonal.getX(), (int) diagonal.getY());
-                if ((tester.getX() >= 0 && tester.getX() < 8) && (tester.getY() >= 0 && tester.getY() < 8)) {
+                tester.translate((int) horizontal.getX(), (int) horizontal.getY());
+                if (chessboard.checkPositionInBoardLimits(tester)) {
                     obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
-                    if (tester.getX() == toX && tester.getY() == toY) {
-                        return true;
+                    if (obstacle == null) {
+                        possible_moves.add(new Point(tester));
+                    } else if (obstacle.getPlayer() != this.getPlayer()) {
+                        possible_eats.add(new Point(tester));
                     }
                 } else {
                     break;
                 }
             } while (obstacle == null);
         }
-        return false;
+    }
+
+    void checkVerticalMovesAndEats() {
+        for (Point vertical : verticalMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
+            do {
+                tester.translate((int) vertical.getX(), (int) vertical.getY());
+                if (chessboard.checkPositionInBoardLimits(tester)) {
+                    obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
+                    if (obstacle == null) {
+                        possible_moves.add(new Point(tester));
+                    } else if (obstacle.getPlayer() != this.getPlayer()) {
+                        possible_eats.add(new Point(tester));
+                    }
+                } else {
+                    break;
+                }
+            } while (obstacle == null);
+        }
+    }
+
+    void checkDiagonalMovesAndEats() {
+        for (Point diagonal : diagonalMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
+            do {
+                tester.translate((int) diagonal.getX(), (int) diagonal.getY());
+                if (chessboard.checkPositionInBoardLimits(tester)) {
+                    obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
+                    if (obstacle == null) {
+                        possible_moves.add(new Point(tester));
+                    } else if (obstacle.getPlayer() != this.getPlayer()) {
+                        possible_eats.add(new Point(tester));
+                    }
+                } else {
+                    break;
+                }
+            } while (obstacle == null);
+        }
+    }
+
+    void checkMovesAndEatsMatrix(Point[] otherMatrix) {
+        for (Point other : otherMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
+
+            tester.translate((int) other.getX(), (int) other.getY());
+            if (chessboard.checkPositionInBoardLimits(tester)) {
+                obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
+                if (obstacle == null) {
+                    possible_moves.add(new Point(tester));
+                } else if (obstacle.getPlayer() != this.getPlayer()) {
+                    possible_eats.add(new Point(tester));
+                }
+            }
+        }
     }
 
     // Getters Setters - tous mis par defaut - à corriger

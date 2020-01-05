@@ -11,16 +11,10 @@ public class Tour extends Piece {
     }
 
     @Override
-    public boolean canMoveTo(int toX, int toY) {
-
-        if (checkVerticalMove(toX)) {
-            return true;
-        }
-
-        if (checkHorizontalMove(toY)) {
-            return true;
-        }
-
-        return false;
+    public void calculatePossibleMoves() {
+        super.calculatePossibleMoves();
+        checkHorizontalMovesAndEats();
+        checkVerticalMovesAndEats();
     }
+
 }

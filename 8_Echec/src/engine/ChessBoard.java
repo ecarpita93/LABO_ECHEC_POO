@@ -64,6 +64,10 @@ public class ChessBoard {
         }
     }
 
+    public boolean checkPositionInBoardLimits(Point position){
+        return (position.getX() >= 0 && position.getX() < 8) && (position.getY() >= 0 && position.getY() < 8);
+
+    }
     public Piece getPieceAtPosition(int x, int y) {
         return game_board[x][y];
     }
