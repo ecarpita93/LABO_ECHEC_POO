@@ -10,10 +10,15 @@ public abstract class Piece {
 
     protected ChessBoard chessboard;
     public PlayerColor player;     // Couleur blanc ou noir
-    public PieceType pieceType;     // Type de la pièce
+    public PieceType piece_type;     // Type de la pièce
     public Point position;          // Position de la pièce
-    public int pieceID;             // Pour différencier les pièces d'une même couleur. 2Tours, 2Fous, 8pions ...
+    public int piece_ID;             // Pour différencier les pièces d'une même couleur. 2Tours, 2Fous, 8pions ...
     ArrayList<Point> possible_moves;
+
+    public ArrayList<Point> getPossibleEats() {
+        return possible_eats;
+    }
+
     ArrayList<Point> possible_eats;
 
     private Point[] diagonalMatrix = {new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1)};
@@ -24,9 +29,9 @@ public abstract class Piece {
     public Piece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int piece_ID) {
         this.chessboard = chessboard;
         this.player = player;
-        this.pieceType = piece_type;
+        this.piece_type = piece_type;
         this.position = position;
-        this.pieceID = piece_ID;
+        this.piece_ID = piece_ID;
 
         possible_moves = new ArrayList<>();
         possible_eats = new ArrayList<>();
@@ -61,7 +66,7 @@ public abstract class Piece {
     }
 
     public void removePieceFromGame() {
-        System.out.println(pieceType + " has been eaten");
+        System.out.println(piece_type + " has been eaten");
         position = new Point(-1, -1);
         chessboard.removePieceList(this);
     }
@@ -153,12 +158,12 @@ public abstract class Piece {
         return player;
     }
 
-    public PieceType getPieceType() {
-        return pieceType;
+    public PieceType getPiece_type() {
+        return piece_type;
     }
 
-    public int getPieceID() {
-        return pieceID;
+    public int getPiece_ID() {
+        return piece_ID;
     }
 
     public Point getPosition() {
@@ -169,15 +174,15 @@ public abstract class Piece {
         this.player = player;
     }
 
-    public void setPieceType(PieceType pieceType) {
-        this.pieceType = pieceType;
+    public void setPiece_type(PieceType piece_type) {
+        this.piece_type = piece_type;
     }
 
     public void setPosition(Point position) {
         this.position = position;
     }
 
-    public void setPieceID(int pieceID) {
-        this.pieceID = pieceID;
+    public void setPiece_ID(int piece_ID) {
+        this.piece_ID = piece_ID;
     }
 }
