@@ -5,7 +5,8 @@ import chess.PlayerColor;
 
 import java.awt.*;
 
-public class Rook extends Piece {
+public class Rook extends FirstMovePiece {
+
     public Rook(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int piece_ID) {
         super(chessboard, player, piece_type, position, piece_ID);
     }
@@ -18,5 +19,4 @@ public class Rook extends Piece {
             checkVerticalMovesAndEats();
         }
     }
-
 }

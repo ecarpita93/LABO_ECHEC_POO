@@ -80,10 +80,13 @@ public class ChessBoard {
 
     public void setPieceAtPosition(Piece piece, int x, int y) {
         game_board[x][y] = piece;
-        if (piece instanceof Pawn) {
-            if (((Pawn) piece).getFirstMove()) {
-                ((Pawn) piece).setFirstMove(false);
+        if (piece instanceof FirstMovePiece) {
+            if (((FirstMovePiece) piece).getFirstMove()) {
+                ((FirstMovePiece) piece).setFirstMove(false);
             }
+        }
+
+        if (piece instanceof Pawn) {
             if (((Pawn) piece).canBePromoted()) {
                 promotePawn((Pawn) piece);
             }

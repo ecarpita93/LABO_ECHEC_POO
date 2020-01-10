@@ -5,9 +5,8 @@ import chess.PlayerColor;
 
 import java.awt.*;
 
-public class Pawn extends Piece {
+public class Pawn extends FirstMovePiece {
 
-    private boolean firstMove;
     private int vector;
 
     private Point[] pawnMoveMatrix = {new Point(0, 1), new Point(0, 2)};
@@ -15,7 +14,6 @@ public class Pawn extends Piece {
 
     public Pawn(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int piece_ID) {
         super(chessboard, player, piece_type, position, piece_ID);
-        firstMove = true;
         vector = this.player == PlayerColor.BLACK ? -1 : 1;
     }
 
@@ -35,7 +33,7 @@ public class Pawn extends Piece {
                 }
             }
 
-            if (!firstMove) {
+            if (!this.getFirstMove()) {
                 break;
             }
         }
@@ -65,11 +63,4 @@ public class Pawn extends Piece {
         }
     }
 
-    public boolean getFirstMove() {
-        return firstMove;
-    }
-
-    public void setFirstMove(boolean firstMove) {
-        this.firstMove = firstMove;
-    }
 }

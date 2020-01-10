@@ -5,19 +5,14 @@ import chess.PlayerColor;
 
 import java.awt.*;
 
-public class King extends Piece  {
+public class King extends FirstMovePiece  {
 
     private Point[] kingMatrix = {new Point(0, 1), new Point(0, -1), new Point(1, 0), new Point(-1, 0), new Point(1, -1), new Point(-1, 1), new Point(1, 1), new Point(-1, -1)};
 
-    public King(ChessBoard chessboard, PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
-        super(chessboard, couleur, pieceType, position, pieceID);
-        chessboard.setPlayerKing(couleur,this);
 
-//        if(couleur == PlayerColor.WHITE){
-//            chessboard.setWhite_king(this);
-//        } else {
-//            chessboard.setBlack_king(this);
-//        }
+    public King(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int pieceID) {
+        super(chessboard, player, piece_type, position, pieceID);
+        chessboard.setPlayerKing(player,this);
     }
 
     @Override
@@ -26,4 +21,13 @@ public class King extends Piece  {
         checkMovesAndEatsMatrix(kingMatrix);
     }
 
+
+//    public boolean isLittleCastling(){
+//        if (chessboard)
+//        return false;
+//    }
+//
+//    public boolean isBigCastling(){
+//        return false;
+//    }
 }
