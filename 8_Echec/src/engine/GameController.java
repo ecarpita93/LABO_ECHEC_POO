@@ -40,7 +40,7 @@ public class GameController implements ChessController {
         chessboard.setPieceAtPosition(piece_to_move, toX, toY);
         chessboard.updateBoardMoves();
 
-        if (checkForCheck()){
+        if (checkForCheck()) {
             view.displayMessage("Check!");
             chessboard.updateBoardMoves();
         }
@@ -53,24 +53,23 @@ public class GameController implements ChessController {
         simpleMove(piece_to_move, fromX, fromY, toX, toY);
     }
 
-    private boolean checkForCheck(){
+    private boolean checkForCheck() {
         PlayerColor other_player;
         Piece other_player_king;
         ArrayList<Piece> current_player_pieces;
 
-        if (current_player == PlayerColor.BLACK){
+        if (current_player == PlayerColor.BLACK) {
             other_player = PlayerColor.WHITE;
-            other_player_king = chessboard.getWhite_king();
-            current_player_pieces = chessboard.getBlack_pieces();
         } else {
             other_player = PlayerColor.BLACK;
-            other_player_king = chessboard.getBlack_king();
-            current_player_pieces = chessboard.getWhite_pieces();
         }
 
-        for (Piece piece : current_player_pieces){
-            for (Point possible_eats : piece.getPossibleEats()){
-                if (other_player_king.getPosition().getX() == possible_eats.getX() && other_player_king.getPosition().getY() == possible_eats.getY()){
+        other_player_king = chessboard.getPlayerKing(other_player);
+        current_player_pieces = chessboard.getPlayerPieces(current_player);
+
+        for (Piece piece : current_player_pieces) {
+            for (Point possible_eats : piece.getPossibleEats()) {
+                if (other_player_king.getPosition().getX() == possible_eats.getX() && other_player_king.getPosition().getY() == possible_eats.getY()) {
                     chessboard.setCheck(other_player, true);
                     //chessboard.calculateCheckPath(other_player_king, piece);
                     return true;
@@ -81,6 +80,7 @@ public class GameController implements ChessController {
         return false;
 
     }
+
     @Override
     public void start(ChessView view) {
         this.view = view;

@@ -10,20 +10,15 @@ import java.util.ArrayList;
 public class ChessBoard {
 
     private Piece[][] game_board;
-    private Piece white_king;
-    private Piece black_king;
-    private ArrayList<Piece> white_pieces;
-    private ArrayList<Piece> black_pieces;
-    private boolean white_check;
-    private boolean black_check;
+    private ChessPlayer[] players;
     private ChessView view;
+
     private ArrayList<Point> checkPath;
 
 
     public ChessBoard() {
+        players = new ChessPlayer[]{new ChessPlayer(), new ChessPlayer()};
         game_board = new Piece[8][8];
-        white_pieces = new ArrayList<Piece>();
-        black_pieces = new ArrayList<Piece>();
     }
 
 
@@ -68,11 +63,10 @@ public class ChessBoard {
     }
 
     public void updateBoardMoves() {
-        for (Piece p : white_pieces) {
-            p.calculatePossibleMoves();
-        }
-        for (Piece p : black_pieces) {
-            p.calculatePossibleMoves();
+        for (ChessPlayer player : players) {
+            for (Piece p : player.getPieces()) {
+                p.calculatePossibleMoves();
+            }
         }
     }
 
@@ -116,56 +110,30 @@ public class ChessBoard {
     }
 
     public void addPieceList(Piece piece) {
-        if (piece.getPlayer() == PlayerColor.BLACK) {
-            black_pieces.add(piece);
-        } else {
-            white_pieces.add(piece);
-        }
+        players[piece.getPlayer().ordinal()].addPieceList(piece);
+
     }
 
     public void removePieceList(Piece piece) {
-        if (piece.getPlayer() == PlayerColor.BLACK) {
-            black_pieces.remove(piece);
-        } else {
-            white_pieces.remove(piece);
-        }
+        players[piece.getPlayer().ordinal()].removePieceList(piece);
     }
 
 //    public void calculateCheckPath(Piece king_under_check, Piece opponent_piece){
 //        checkPath.add(new Point((int)opponent_piece.getPosition().getX(), (int)opponent_piece.getPosition().getY())); // the first value is the same as the origin
 //    }
 
-    public ArrayList<Piece> getWhite_pieces() {
-        return white_pieces;
+
+    public ArrayList<Piece> getPlayerPieces(PlayerColor player) {
+        return players[player.ordinal()].getPieces();
     }
 
-    public void setWhite_pieces(ArrayList<Piece> white_pieces) {
-        this.white_pieces = white_pieces;
+    public Piece getPlayerKing(PlayerColor player) {
+        return players[player.ordinal()].getKing();
+
     }
 
-    public ArrayList<Piece> getBlack_pieces() {
-        return black_pieces;
-    }
-
-    public void setBlack_pieces(ArrayList<Piece> black_pieces) {
-        this.black_pieces = black_pieces;
-    }
-
-
-    public Piece getWhite_king() {
-        return white_king;
-    }
-
-    public void setWhite_king(Piece white_king) {
-        this.white_king = white_king;
-    }
-
-    public Piece getBlack_king() {
-        return black_king;
-    }
-
-    public void setBlack_king(Piece black_king) {
-        this.black_king = black_king;
+    public void setPlayerKing(PlayerColor player, Piece king) {
+        players[player.ordinal()].setKing(king);
     }
 
     public ChessView getView() {
@@ -178,19 +146,11 @@ public class ChessBoard {
 
 
     public void setCheck(PlayerColor player_under_check, boolean check) {
-        if (player_under_check == PlayerColor.WHITE) {
-            this.white_check = check;
-        } else {
-            this.black_check = check;
-        }
+        players[player_under_check.ordinal()].setCheck(check);
     }
 
     public boolean getCheck(PlayerColor player) {
-        if (player == PlayerColor.WHITE) {
-            return white_check;
-        } else {
-            return black_check;
-        }
+        return players[player.ordinal()].getCheck();
     }
 
 }

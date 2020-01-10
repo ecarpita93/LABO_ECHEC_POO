@@ -11,11 +11,13 @@ public class King extends Piece  {
 
     public King(ChessBoard chessboard, PlayerColor couleur, PieceType pieceType, Point position, int pieceID) {
         super(chessboard, couleur, pieceType, position, pieceID);
-        if(couleur == PlayerColor.WHITE){
-            chessboard.setWhite_king(this);
-        } else {
-            chessboard.setBlack_king(this);
-        }
+        chessboard.setPlayerKing(couleur,this);
+
+//        if(couleur == PlayerColor.WHITE){
+//            chessboard.setWhite_king(this);
+//        } else {
+//            chessboard.setBlack_king(this);
+//        }
     }
 
     @Override
