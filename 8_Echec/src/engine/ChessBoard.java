@@ -26,36 +26,40 @@ public class ChessBoard {
 
         Piece piece;
 
-        piece = new Rook(this, PlayerColor.WHITE, PieceType.ROOK, new Point(0, 0), 1);
-        piece = new Rook(this, PlayerColor.WHITE, PieceType.ROOK, new Point(7, 0), 2);
+        piece = new Rook(this, PlayerColor.WHITE, PieceType.ROOK, new Point(0, 0));
+        players[PlayerColor.WHITE.ordinal()].setBigCastlingRook((FirstMovePiece) piece);
+        piece = new Rook(this, PlayerColor.WHITE, PieceType.ROOK, new Point(7, 0));
+        players[PlayerColor.WHITE.ordinal()].setLittleCastlingRook((FirstMovePiece) piece);
+        piece = new Knight(this, PlayerColor.WHITE, PieceType.KNIGHT, new Point(1, 0));
+        piece = new Knight(this, PlayerColor.WHITE, PieceType.KNIGHT, new Point(6, 0));
 
-        piece = new Knight(this, PlayerColor.WHITE, PieceType.KNIGHT, new Point(1, 0), 1);
-        piece = new Knight(this, PlayerColor.WHITE, PieceType.KNIGHT, new Point(6, 0), 2);
+        piece = new Bishop(this, PlayerColor.WHITE, PieceType.BISHOP, new Point(2, 0));
+        piece = new Bishop(this, PlayerColor.WHITE, PieceType.BISHOP, new Point(5, 0));
 
-        piece = new Bishop(this, PlayerColor.WHITE, PieceType.BISHOP, new Point(2, 0), 1);
-        piece = new Bishop(this, PlayerColor.WHITE, PieceType.BISHOP, new Point(5, 0), 2);
-
-        piece = new Queen(this, PlayerColor.WHITE, PieceType.QUEEN, new Point(3, 0), 1);
-        piece = new King(this, PlayerColor.WHITE, PieceType.KING, new Point(4, 0), 1);
+        piece = new Queen(this, PlayerColor.WHITE, PieceType.QUEEN, new Point(3, 0));
+        piece = new King(this, PlayerColor.WHITE, PieceType.KING, new Point(4, 0));
 
         for (int i = 0; i < 8; i++) {
-            piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1), i);
+             piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
         }
 
-        piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7), 1);
-        piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(7, 7), 2);
+        piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7));
+        players[PlayerColor.BLACK.ordinal()].setBigCastlingRook((FirstMovePiece) piece);
 
-        piece = new Knight(this, PlayerColor.BLACK, PieceType.KNIGHT, new Point(1, 7), 1);
-        piece = new Knight(this, PlayerColor.BLACK, PieceType.KNIGHT, new Point(6, 7), 2);
+        piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(7, 7));
+        players[PlayerColor.BLACK.ordinal()].setLittleCastlingRook((FirstMovePiece) piece);
 
-        piece = new Bishop(this, PlayerColor.BLACK, PieceType.BISHOP, new Point(2, 7), 1);
-        piece = new Bishop(this, PlayerColor.BLACK, PieceType.BISHOP, new Point(5, 7), 2);
+        piece = new Knight(this, PlayerColor.BLACK, PieceType.KNIGHT, new Point(1, 7));
+        piece = new Knight(this, PlayerColor.BLACK, PieceType.KNIGHT, new Point(6, 7));
 
-        piece = new Queen(this, PlayerColor.BLACK, PieceType.QUEEN, new Point(3, 7), 1);
-        piece = new King(this, PlayerColor.BLACK, PieceType.KING, new Point(4, 7), 1);
+        piece = new Bishop(this, PlayerColor.BLACK, PieceType.BISHOP, new Point(2, 7));
+        piece = new Bishop(this, PlayerColor.BLACK, PieceType.BISHOP, new Point(5, 7));
+
+        piece = new Queen(this, PlayerColor.BLACK, PieceType.QUEEN, new Point(3, 7));
+        piece = new King(this, PlayerColor.BLACK, PieceType.KING, new Point(4, 7));
 
         for (int i = 0; i < 8; i++) {
-            piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6), i);
+              piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
         }
 
         updateBoardMoves();
@@ -78,34 +82,21 @@ public class ChessBoard {
         return game_board[x][y];
     }
 
-    public void setPieceAtPosition(Piece piece, int x, int y) {
-        game_board[x][y] = piece;
+    public void setPieceAtPosition(Piece piece, int toX, int toY) {
+
+        piece.setPosition(new Point(toX, toY));
+        game_board[toX][toY] = piece;
+
         if (piece instanceof FirstMovePiece) {
             if (((FirstMovePiece) piece).getFirstMove()) {
                 ((FirstMovePiece) piece).setFirstMove(false);
             }
         }
 
-        if (piece instanceof Pawn) {
-            if (((Pawn) piece).canBePromoted()) {
-                promotePawn((Pawn) piece);
-            }
-        }
-        view.putPiece(piece.getPiece_type(), piece.getPlayer(), piece.getPosition().x, piece.getPosition().y);
+        view.putPiece(piece.getPiece_type(), piece.getPlayer(), (int) piece.getPosition().getX(), (int) piece.getPosition().getY());
     }
 
-    public void promotePawn(Pawn pawn_to_promote) {
-        ChessView.UserChoice user = new ChessView.UserChoice() {
-            @Override
-            public String textValue() {
-                return "king me!";
-            }
-        };
-        System.out.println("promoting");
-        view.askUser("Pawn prmottion", "how should be promoted", user);
-        System.out.println("promoting");
 
-    }
 
     public void removePieceFromPosition(int x, int y) {
         game_board[x][y] = null;
@@ -136,7 +127,7 @@ public class ChessBoard {
     }
 
     public void setPlayerKing(PlayerColor player, Piece king) {
-        players[player.ordinal()].setKing(king);
+        players[player.ordinal()].setKing((FirstMovePiece) king);
     }
 
     public ChessView getView() {
@@ -154,6 +145,18 @@ public class ChessBoard {
 
     public boolean getCheck(PlayerColor player) {
         return players[player.ordinal()].getCheck();
+    }
+
+    public boolean areLittleCastlingPiecesInPosition(PlayerColor player) {
+        return players[player.ordinal()].areLittleCastlingPiecesInPosition();
+    }
+
+    public boolean areBigCastlingPiecesInPosition(PlayerColor player) {
+        return players[player.ordinal()].areBigCastlingPiecesInPosition();
+    }
+
+    public ChessPlayer[] getPlayers() {
+        return players;
     }
 
 }

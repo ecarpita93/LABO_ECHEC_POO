@@ -12,7 +12,6 @@ public abstract class Piece {
     public PlayerColor player;       // Couleur blanc ou noir
     public PieceType piece_type;     // Type de la pièce
     public Point position;           // Position de la pièce
-    public int piece_ID;             // Pour différencier les pièces d'une même couleur. 2Tours, 2Fous, 8pions ...
     ArrayList<Point> possible_moves;
     ArrayList<Point> possible_eats;
 
@@ -21,12 +20,11 @@ public abstract class Piece {
     private Point[] horizontalMatrix = {new Point(1, 0), new Point(-1, 0)};
 
     // Constructeur
-    public Piece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int piece_ID) {
+    public Piece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
         this.chessboard = chessboard;
         this.player = player;
         this.piece_type = piece_type;
         this.position = position;
-        this.piece_ID = piece_ID;
 
         possible_moves = new ArrayList<>();
         possible_eats = new ArrayList<>();
@@ -41,7 +39,6 @@ public abstract class Piece {
     public void calculatePossibleMoves() {
         resetMovesArrays();
     }
-
 
     private boolean findInArray(ArrayList<Point> possible_goes, int toX, int toY) {
         for (Point possible_go : possible_goes) {
@@ -134,10 +131,6 @@ public abstract class Piece {
         return piece_type;
     }
 
-    public int getPiece_ID() {
-        return piece_ID;
-    }
-
     public Point getPosition() {
         return position;
     }
@@ -152,9 +145,5 @@ public abstract class Piece {
 
     public void setPosition(Point position) {
         this.position = position;
-    }
-
-    public void setPiece_ID(int piece_ID) {
-        this.piece_ID = piece_ID;
     }
 }

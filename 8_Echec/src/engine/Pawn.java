@@ -12,8 +12,8 @@ public class Pawn extends FirstMovePiece {
     private Point[] pawnMoveMatrix = {new Point(0, 1), new Point(0, 2)};
     private Point[] pawnEatMatrix = {new Point(1, 1), new Point(-1, 1)};
 
-    public Pawn(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position, int piece_ID) {
-        super(chessboard, player, piece_type, position, piece_ID);
+    public Pawn(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
+        super(chessboard, player, piece_type, position);
         vector = this.player == PlayerColor.BLACK ? -1 : 1;
     }
 

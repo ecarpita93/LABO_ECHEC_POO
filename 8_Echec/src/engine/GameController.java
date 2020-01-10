@@ -12,7 +12,7 @@ public class GameController implements ChessController {
 
     private int game_turn;
     private PlayerColor current_player;
-    private Stack game_history;  // Pour avoir l'historic des coups
+    private Stack game_history;
     private ChessView view;
     private ChessBoard chessboard;
 
@@ -32,25 +32,6 @@ public class GameController implements ChessController {
     public void initGame(ChessView view) {
         chessboard.setView(view);
         chessboard.initStandardBoard();
-    }
-
-    private void simpleMove(Piece piece_to_move, int fromX, int fromY, int toX, int toY) {
-        piece_to_move.setPosition(new Point(toX, toY));
-        chessboard.removePieceFromPosition(fromX, fromY);
-        chessboard.setPieceAtPosition(piece_to_move, toX, toY);
-        chessboard.updateBoardMoves();
-
-        if (checkForCheck()) {
-            view.displayMessage("Check!");
-            chessboard.updateBoardMoves();
-        }
-
-        game_turn++;
-    }
-
-    private void moveAndEat(Piece piece_to_move, Piece piece_to_eat, int fromX, int fromY, int toX, int toY) {
-        piece_to_eat.removePieceFromGame();
-        simpleMove(piece_to_move, fromX, fromY, toX, toY);
     }
 
     private boolean checkForCheck() {
@@ -81,6 +62,79 @@ public class GameController implements ChessController {
 
     }
 
+    private void checkForCastling(King king, int toX) {
+        if (king.isBigCastling(toX)) {
+            doBigCastling(king);
+        } else if (king.isLittleCastling(toX)) {
+            doLittleCastling(king);
+        }
+    }
+
+    private void checkForPawnPromotion(Pawn pawn) {
+        if (pawn.canBePromoted()) {
+            doPromotion(pawn);
+        }
+    }
+
+    private void doPromotion(Pawn pawn_to_promote) {
+//        ChessView.UserChoice user = new ChessView.UserChoice() {
+//            @Override
+//            public String textValue() {
+//                return "king me!";
+//            }
+//        };
+        System.out.println("promoting");
+        //  view.askUser("Pawn prmottion", "how should be promoted", user);
+        //   System.out.println("promoting");
+
+    }
+
+    private void doBigCastling(King king_castling) {
+        System.out.println("Big!");
+        Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getBigCastlingRook();
+        doMove(rook, (int) king_castling.getPosition().getX() - 2, (int) king_castling.getPosition().getY());
+        game_turn--;
+
+    }
+
+    private void doLittleCastling(King king_castling) {
+        System.out.println("little!");
+        Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getLittleCastlingRook();
+        doMove(rook, (int) king_castling.getPosition().getX() + 1, (int) king_castling.getPosition().getY());
+        game_turn--;
+    }
+
+    private void doMove(Piece piece_to_move, int toX, int toY) {
+
+        chessboard.removePieceFromPosition((int) piece_to_move.getPosition().getX(), (int) piece_to_move.getPosition().getY());
+
+        if (piece_to_move instanceof King) {
+            checkForCastling((King) piece_to_move, toX);
+        }
+
+        chessboard.setPieceAtPosition(piece_to_move, toX, toY);
+
+        if (piece_to_move instanceof Pawn) {
+            checkForPawnPromotion((Pawn) piece_to_move);
+        }
+
+        chessboard.updateBoardMoves();
+
+
+        if (checkForCheck()) {
+            view.displayMessage("Check!");
+            chessboard.updateBoardMoves();
+        }
+
+        game_turn++;
+    }
+
+    private void doMoveAndEat(Piece piece_to_move, Piece piece_to_eat, int toX, int toY) {
+        piece_to_eat.removePieceFromGame();
+        doMove(piece_to_move, toX, toY);
+    }
+
+
     @Override
     public void start(ChessView view) {
         this.view = view;
@@ -90,6 +144,7 @@ public class GameController implements ChessController {
 
     @Override
     public boolean move(int fromX, int fromY, int toX, int toY) {
+
         current_player = PlayerColor.values()[game_turn % 2];
 
         Piece piece_to_move = chessboard.getPieceAtPosition(fromX, fromY);
@@ -99,12 +154,12 @@ public class GameController implements ChessController {
 
             if (piece_at_new_position != null) {
                 if (piece_to_move.canEatTo(toX, toY)) {
-                    moveAndEat(piece_to_move, piece_at_new_position, fromX, fromY, toX, toY);
+                    doMoveAndEat(piece_to_move, piece_at_new_position, toX, toY);
                     return true;
                 }
             } else {
                 if (piece_to_move.canMoveTo(toX, toY)) {
-                    simpleMove(piece_to_move, fromX, fromY, toX, toY);
+                    doMove(piece_to_move, toX, toY);
                     return true;
                 }
             }

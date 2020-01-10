@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class ChessPlayer {
 
-    private Piece king;
+    private FirstMovePiece king;
+    private FirstMovePiece little_castling_rook;
+    private FirstMovePiece big_castling_rook;
     private ArrayList<Piece> pieces;
     private boolean check;
-    private boolean little_castling_possible;
-    private boolean big_castling_possible;
 
     public ChessPlayer() {
         pieces = new ArrayList<>();
@@ -30,8 +30,16 @@ public class ChessPlayer {
         return king;
     }
 
-    public void setKing(Piece king) {
+    public void setKing(FirstMovePiece king) {
         this.king = king;
+    }
+
+    public void setLittleCastlingRook(FirstMovePiece little_castling_Rook) {
+        this.little_castling_rook = little_castling_Rook;
+    }
+
+    public void setBigCastlingRook(FirstMovePiece big_castling_Rook) {
+        this.big_castling_rook = big_castling_Rook;
     }
 
     public boolean getCheck() {
@@ -42,21 +50,28 @@ public class ChessPlayer {
         this.check = check;
     }
 
-    public boolean getLittleCastlingPossible() {
-        return little_castling_possible;
+
+    public FirstMovePiece getLittleCastlingRook() {
+        return little_castling_rook;
     }
 
-    public void setLittleCastlingPossible(boolean little_castling_possible) {
-        this.little_castling_possible = little_castling_possible;
+    public FirstMovePiece getBigCastlingRook() {
+        return big_castling_rook;
     }
 
-    public boolean getBigCastlingPossible() {
-        return big_castling_possible;
+    public boolean areLittleCastlingPiecesInPosition() {
+        if (king.getFirstMove()){
+            return little_castling_rook.getFirstMove();
+        }
+        return false;
     }
 
-    public void setBigCastlingPossible(boolean big_castling_possible) {
-        this.big_castling_possible = big_castling_possible;
-    }
 
+    public boolean areBigCastlingPiecesInPosition() {
+        if (king.getFirstMove()){
+            return big_castling_rook.getFirstMove();
+        }
+        return false;
+    }
 
 }
