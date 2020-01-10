@@ -1,11 +1,12 @@
-package engine;
+package engine.chessPieces;
 
 import chess.PieceType;
 import chess.PlayerColor;
+import engine.chessElements.ChessBoard;
 
 import java.awt.*;
 
-public class FirstMovePiece extends Piece {
+public abstract class FirstMovePiece extends Piece {
     private boolean firstMove;
 
     public FirstMovePiece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {

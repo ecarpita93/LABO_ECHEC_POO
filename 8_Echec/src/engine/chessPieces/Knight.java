@@ -1,7 +1,8 @@
-package engine;
+package engine.chessPieces;
 
 import chess.PieceType;
 import chess.PlayerColor;
+import engine.chessElements.ChessBoard;
 
 import java.awt.*;
 

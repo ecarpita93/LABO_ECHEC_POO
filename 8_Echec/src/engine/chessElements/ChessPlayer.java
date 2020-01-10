@@ -1,4 +1,7 @@
-package engine;
+package engine.chessElements;
+
+import engine.chessPieces.FirstMovePiece;
+import engine.chessPieces.Piece;
 
 import java.util.ArrayList;
 
@@ -72,7 +75,6 @@ public class ChessPlayer {
         }
         return false;
     }
-
 
     public boolean areBigCastlingPiecesInPosition() {
         if (king.getFirstMove()){

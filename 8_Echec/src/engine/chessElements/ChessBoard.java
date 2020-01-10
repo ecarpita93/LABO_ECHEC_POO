@@ -1,8 +1,9 @@
-package engine;
+package engine.chessElements;
 
 import chess.ChessView;
 import chess.PieceType;
 import chess.PlayerColor;
+import engine.chessPieces.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -114,7 +115,6 @@ public class ChessBoard {
     }
 
 
-
     public void removePieceFromPosition(int x, int y) {
         game_board[x][y] = null;
         view.removePiece(x, y);
@@ -150,7 +150,6 @@ public class ChessBoard {
     public void setView(ChessView view) {
         this.view = view;
     }
-
 
     public void setCheck(PlayerColor player_under_check, boolean check) {
         players[player_under_check.ordinal()].setCheck(check);

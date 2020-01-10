@@ -3,6 +3,10 @@ package engine;
 import chess.ChessController;
 import chess.ChessView;
 import chess.PlayerColor;
+import engine.chessElements.ChessBoard;
+import engine.chessPieces.King;
+import engine.chessPieces.Pawn;
+import engine.chessPieces.Piece;
 
 import java.awt.*;
 import java.util.ArrayList;

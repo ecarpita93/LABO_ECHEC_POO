@@ -1,12 +1,14 @@
-package engine;
+package engine.chessPieces;
 
 import chess.PieceType;
 import chess.PlayerColor;
+import engine.chessElements.ChessBoard;
 
 import java.awt.*;
 
-public class Bishop extends Piece {
-    public Bishop(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
+public class Rook extends FirstMovePiece {
+
+    public Rook(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
         super(chessboard, player, piece_type, position);
     }
 
@@ -14,8 +16,8 @@ public class Bishop extends Piece {
     public void calculatePossibleMoves() {
         super.calculatePossibleMoves();
         if (!chessboard.getCheck(player)) {
-            checkDiagonalMovesAndEats();
+            checkHorizontalMovesAndEats();
+            checkVerticalMovesAndEats();
         }
     }
-
 }
