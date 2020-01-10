@@ -13,14 +13,31 @@ public class ChessBoard {
     private ChessPlayer[] players;
     private ChessView view;
 
+    private static final int BOARD_X = 8;
+    private static final int BOARD_Y = 8;
+
+
     private ArrayList<Point> checkPath;
 
 
     public ChessBoard() {
         players = new ChessPlayer[]{new ChessPlayer(), new ChessPlayer()};
-        game_board = new Piece[8][8];
+        game_board = new Piece[BOARD_X][BOARD_Y];
     }
 
+    public void clearGameBoard() {
+        for (int x = 0; x < BOARD_X; x++) {
+            for (int y = 0; y < BOARD_Y; y++) {
+                removePieceFromPosition(x, y);
+            }
+        }
+    }
+
+    public void clearPlayers(){
+        for (ChessPlayer player : players){
+            player.clearPiecesList();
+        }
+    }
 
     public void initStandardBoard() {
 
@@ -128,10 +145,6 @@ public class ChessBoard {
 
     public void setPlayerKing(PlayerColor player, Piece king) {
         players[player.ordinal()].setKing((FirstMovePiece) king);
-    }
-
-    public ChessView getView() {
-        return view;
     }
 
     public void setView(ChessView view) {

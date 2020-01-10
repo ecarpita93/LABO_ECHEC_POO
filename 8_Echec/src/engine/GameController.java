@@ -17,21 +17,18 @@ public class GameController implements ChessController {
     private ChessBoard chessboard;
 
     public GameController() {
-        game_turn = 0;
         chessboard = new ChessBoard();
     }
 
-    public void clearBoard(ChessView view) {
-        for (int x = 0; x < 7; x++) {
-            for (int y = 0; y < 7; y++) {
-                view.removePiece(x, y);
-            }
-        }
-    }
-
-    public void initGame(ChessView view) {
+    public void initGame() {
+        game_turn = 0;
         chessboard.setView(view);
         chessboard.initStandardBoard();
+    }
+
+    public void endGame() {
+        chessboard.clearGameBoard();
+        chessboard.clearPlayers();
     }
 
     private boolean checkForCheck() {
@@ -90,7 +87,6 @@ public class GameController implements ChessController {
     }
 
     private void doBigCastling(King king_castling) {
-        System.out.println("Big!");
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getBigCastlingRook();
         doMove(rook, (int) king_castling.getPosition().getX() - 2, (int) king_castling.getPosition().getY());
         game_turn--;
@@ -98,7 +94,6 @@ public class GameController implements ChessController {
     }
 
     private void doLittleCastling(King king_castling) {
-        System.out.println("little!");
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getLittleCastlingRook();
         doMove(rook, (int) king_castling.getPosition().getX() + 1, (int) king_castling.getPosition().getY());
         game_turn--;
@@ -139,7 +134,7 @@ public class GameController implements ChessController {
     public void start(ChessView view) {
         this.view = view;
         this.view.startView();
-        initGame(this.view);
+        initGame();
     }
 
     @Override
@@ -170,8 +165,8 @@ public class GameController implements ChessController {
 
     @Override
     public void newGame() {
-        clearBoard(view);
-        initGame(view);
+        endGame();
+        initGame();
     }
 
 }

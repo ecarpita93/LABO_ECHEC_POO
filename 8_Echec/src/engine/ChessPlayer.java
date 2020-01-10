@@ -14,6 +14,13 @@ public class ChessPlayer {
         pieces = new ArrayList<>();
     }
 
+    public void clearPiecesList() {
+        pieces.clear();
+        little_castling_rook = null;
+        big_castling_rook = null;
+        king = null;
+    }
+
     public void addPieceList(Piece piece) {
             pieces.add(piece);
     }
