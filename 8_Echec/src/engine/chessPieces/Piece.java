@@ -123,6 +123,10 @@ public abstract class Piece {
         return possible_eats;
     }
 
+    public ArrayList<Point> getPossibleMoves() {
+        return possible_eats;
+    }
+
     // Getters Setters - tous mis par defaut - à corriger
     public PlayerColor getPlayer() {
         return player;

@@ -58,7 +58,7 @@ public class ChessBoard {
         piece = new King(this, PlayerColor.WHITE, PieceType.KING, new Point(4, 0));
 
         for (int i = 0; i < 8; i++) {
-             piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
+            // piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
         }
 
         piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7));
@@ -77,7 +77,7 @@ public class ChessBoard {
         piece = new King(this, PlayerColor.BLACK, PieceType.KING, new Point(4, 7));
 
         for (int i = 0; i < 8; i++) {
-              piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
+             // piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
         }
 
         updateBoardMoves();
@@ -157,6 +157,24 @@ public class ChessBoard {
 
     public boolean getCheck(PlayerColor player) {
         return players[player.ordinal()].getCheck();
+    }
+
+    public boolean isPieceInDangerAtPosition(Point piece_in_danger_position, ArrayList<Piece> other_player_pieces) {
+
+        for (Piece piece : other_player_pieces) {
+
+            for (Point possible_moves : piece.getPossibleMoves()) {
+                if (piece_in_danger_position.getX() == possible_moves.getX() && piece_in_danger_position.getY() == possible_moves.getY()) {
+                    return true;
+                }
+            }
+            for (Point possible_eats : piece.getPossibleEats()) {
+                if (piece_in_danger_position.getX() == possible_eats.getX() && piece_in_danger_position.getY() == possible_eats.getY()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean areLittleCastlingPiecesInPosition(PlayerColor player) {

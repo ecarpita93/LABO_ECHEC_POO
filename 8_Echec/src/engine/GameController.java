@@ -16,9 +16,12 @@ public class GameController implements ChessController {
 
     private int game_turn;
     private PlayerColor current_player;
+    private PlayerColor other_player;
     private Stack game_history;
     private ChessView view;
     private ChessBoard chessboard;
+
+    private Piece piece_to_be_eliminated_if_valid_move;
 
     public GameController() {
         chessboard = new ChessBoard();
@@ -26,6 +29,7 @@ public class GameController implements ChessController {
 
     public void initGame() {
         game_turn = 0;
+        piece_to_be_eliminated_if_valid_move = null;
         chessboard.setView(view);
         chessboard.initStandardBoard();
     }
@@ -35,29 +39,34 @@ public class GameController implements ChessController {
         chessboard.clearPlayers();
     }
 
-    private boolean checkForCheck() {
-        PlayerColor other_player;
+    private boolean checkForFriendlyCheck() {
+        Piece current_player_king;
+        ArrayList<Piece> other_player_pieces;
+
+        current_player_king = chessboard.getPlayerKing(current_player);
+        other_player_pieces = chessboard.getPlayerPieces(other_player);
+
+        if (chessboard.isPieceInDangerAtPosition(current_player_king.getPosition(), other_player_pieces)) {
+            System.out.println("our king is in danger, not possible to move here");
+            return true;
+        }
+        return false;
+
+    }
+
+    private boolean checkForEnemyCheck() {
         Piece other_player_king;
         ArrayList<Piece> current_player_pieces;
-
-        if (current_player == PlayerColor.BLACK) {
-            other_player = PlayerColor.WHITE;
-        } else {
-            other_player = PlayerColor.BLACK;
-        }
 
         other_player_king = chessboard.getPlayerKing(other_player);
         current_player_pieces = chessboard.getPlayerPieces(current_player);
 
-        for (Piece piece : current_player_pieces) {
-            for (Point possible_eats : piece.getPossibleEats()) {
-                if (other_player_king.getPosition().getX() == possible_eats.getX() && other_player_king.getPosition().getY() == possible_eats.getY()) {
-                    chessboard.setCheck(other_player, true);
-                    //chessboard.calculateCheckPath(other_player_king, piece);
-                    return true;
-                }
-            }
+        if (chessboard.isPieceInDangerAtPosition(other_player_king.getPosition(), current_player_pieces)) {
+            view.displayMessage(other_player + " king is in check!");
+            chessboard.setCheck(other_player, true);
+            return true;
         }
+
         chessboard.setCheck(other_player, false);
         return false;
 
@@ -92,18 +101,32 @@ public class GameController implements ChessController {
 
     private void doBigCastling(King king_castling) {
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getBigCastlingRook();
-        doMove(rook, (int) king_castling.getPosition().getX() - 2, (int) king_castling.getPosition().getY());
+        doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() - 2, (int) king_castling.getPosition().getY());
         game_turn--;
 
     }
 
     private void doLittleCastling(King king_castling) {
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getLittleCastlingRook();
-        doMove(rook, (int) king_castling.getPosition().getX() + 1, (int) king_castling.getPosition().getY());
+        doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() + 1, (int) king_castling.getPosition().getY());
         game_turn--;
     }
 
-    private void doMove(Piece piece_to_move, int toX, int toY) {
+
+    private void unDoMove(Piece piece_to_move, int fromX, int fromY, int toX, int toY) {
+
+        chessboard.removePieceFromPosition((int) piece_to_move.getPosition().getX(), (int) piece_to_move.getPosition().getY());
+        chessboard.setPieceAtPosition(piece_to_move, toX, toY);
+
+        if (piece_to_be_eliminated_if_valid_move != null) {
+            chessboard.setPieceAtPosition(piece_to_be_eliminated_if_valid_move, fromX, fromY);
+            piece_to_be_eliminated_if_valid_move = null;
+        }
+
+        chessboard.updateBoardMoves();
+    }
+
+    private boolean doMove(Piece piece_to_move, int fromX, int fromY, int toX, int toY) {
 
         chessboard.removePieceFromPosition((int) piece_to_move.getPosition().getX(), (int) piece_to_move.getPosition().getY());
 
@@ -119,18 +142,28 @@ public class GameController implements ChessController {
 
         chessboard.updateBoardMoves();
 
+        if (checkForFriendlyCheck()) {
+            unDoMove(piece_to_move, toX, toY, fromX, fromY);
+            return false;
+        } else {
 
-        if (checkForCheck()) {
-            view.displayMessage("Check!");
-            chessboard.updateBoardMoves();
+            if (piece_to_be_eliminated_if_valid_move != null) {
+                piece_to_be_eliminated_if_valid_move.removePieceFromGame();
+                piece_to_be_eliminated_if_valid_move = null;
+            }
+
+            if (checkForEnemyCheck()) {
+                chessboard.updateBoardMoves();
+            }
+
+            game_turn++;
+            return true;
         }
-
-        game_turn++;
     }
 
-    private void doMoveAndEat(Piece piece_to_move, Piece piece_to_eat, int toX, int toY) {
-        piece_to_eat.removePieceFromGame();
-        doMove(piece_to_move, toX, toY);
+    private boolean doMoveAndEat(Piece piece_to_move, Piece piece_to_eat, int fromX, int fromY, int toX, int toY) {
+        piece_to_be_eliminated_if_valid_move = piece_to_eat;
+        return doMove(piece_to_move, fromX, fromY, toX, toY);
     }
 
 
@@ -145,6 +178,7 @@ public class GameController implements ChessController {
     public boolean move(int fromX, int fromY, int toX, int toY) {
 
         current_player = PlayerColor.values()[game_turn % 2];
+        other_player = PlayerColor.values()[(game_turn + 1) % 2];
 
         Piece piece_to_move = chessboard.getPieceAtPosition(fromX, fromY);
         Piece piece_at_new_position = chessboard.getPieceAtPosition(toX, toY);
@@ -153,13 +187,11 @@ public class GameController implements ChessController {
 
             if (piece_at_new_position != null) {
                 if (piece_to_move.canEatTo(toX, toY)) {
-                    doMoveAndEat(piece_to_move, piece_at_new_position, toX, toY);
-                    return true;
+                    return doMoveAndEat(piece_to_move, piece_at_new_position, fromX, fromY, toX, toY);
                 }
             } else {
                 if (piece_to_move.canMoveTo(toX, toY)) {
-                    doMove(piece_to_move, toX, toY);
-                    return true;
+                    return doMove(piece_to_move, fromX, fromY, toX, toY);
                 }
             }
 

@@ -14,11 +14,9 @@ public class Queen extends Piece {
     @Override
     public void calculatePossibleMoves() {
         super.calculatePossibleMoves();
-        if (!chessboard.getCheck(player)) {
             checkDiagonalMovesAndEats();
             checkHorizontalMovesAndEats();
             checkVerticalMovesAndEats();
-        }
     }
 
 }

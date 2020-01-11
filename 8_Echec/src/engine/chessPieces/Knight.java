@@ -17,9 +17,7 @@ public class Knight extends Piece {
     @Override
     public void calculatePossibleMoves() {
         super.calculatePossibleMoves();
-        if (!chessboard.getCheck(player)) {
             checkMovesAndEatsMatrix(knightMatrix);
-        }
     }
 
 }

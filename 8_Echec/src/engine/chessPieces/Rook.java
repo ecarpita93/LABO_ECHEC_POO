@@ -15,9 +15,7 @@ public class Rook extends FirstMovePiece {
     @Override
     public void calculatePossibleMoves() {
         super.calculatePossibleMoves();
-        if (!chessboard.getCheck(player)) {
             checkHorizontalMovesAndEats();
             checkVerticalMovesAndEats();
-        }
     }
 }
