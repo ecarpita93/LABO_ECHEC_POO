@@ -2,6 +2,7 @@ package engine;
 
 import chess.ChessController;
 import chess.ChessView;
+import chess.PieceType;
 import chess.PlayerColor;
 import engine.chessElements.ChessBoard;
 import engine.chessPieces.King;
@@ -20,6 +21,10 @@ public class GameController implements ChessController {
     private Stack game_history;
     private ChessView view;
     private ChessBoard chessboard;
+    private final Promotion[] promotion_possibilities = new Promotion[]{new Promotion(PieceType.QUEEN),
+                                                                    new Promotion(PieceType.BISHOP),
+                                                                    new Promotion(PieceType.ROOK),
+                                                                    new Promotion(PieceType.KNIGHT)};
 
     private Piece piece_to_be_eliminated_if_valid_move;
 
@@ -87,16 +92,10 @@ public class GameController implements ChessController {
     }
 
     private void doPromotion(Pawn pawn_to_promote) {
-//        ChessView.UserChoice user = new ChessView.UserChoice() {
-//            @Override
-//            public String textValue() {
-//                return "king me!";
-//            }
-//        };
-        System.out.println("promoting");
-        //  view.askUser("Pawn prmottion", "how should be promoted", user);
-        //   System.out.println("promoting");
-
+        Promotion choice = view.askUser("Pawn promotion", "How should be promoted your pawn? ", promotion_possibilities);
+        Point position = pawn_to_promote.getPosition();
+        pawn_to_promote.removePieceFromGame();
+        chessboard.addPromotedPiece(current_player, choice.getPromoteTo(), position);
     }
 
     private void doBigCastling(King king_castling) {
@@ -203,6 +202,25 @@ public class GameController implements ChessController {
     public void newGame() {
         endGame();
         initGame();
+    }
+
+
+     public class Promotion implements ChessView.UserChoice {
+
+        private PieceType promote_to;
+
+        public Promotion (PieceType possible_promotion){
+            promote_to = possible_promotion;
+        }
+
+        public PieceType getPromoteTo() {
+            return promote_to;
+        }
+
+        @Override
+        public String textValue() {
+            return promote_to.toString();
+        }
     }
 
 }
