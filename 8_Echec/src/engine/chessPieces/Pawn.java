@@ -10,20 +10,24 @@ public class Pawn extends FirstMovePiece {
 
     private int vector;
 
-    private Point[] pawnMoveMatrix = {new Point(0, 1), new Point(0, 2)};
-    private Point[] pawnEatMatrix = {new Point(1, 1), new Point(-1, 1)};
+    private static final Point[] PAWN_MOVE_MATRIX = {new Point(0, 1), new Point(0, 2)};
+    private static final Point[] PAWN_EAT_MATRIX = {new Point(1, 1), new Point(-1, 1)};
+    private static final int WHITE_VECTOR = 1;
+    private static final int BLACK_VECTOR = -1;
+    private static final int WHITE_PROMOTION_Y = 7;
+    private static final int BLACK_PROMOTION_Y = 0;
 
     public Pawn(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
         super(chessboard, player, piece_type, position);
-        vector = this.player == PlayerColor.BLACK ? -1 : 1;
+        vector = this.player == PlayerColor.BLACK ? BLACK_VECTOR : WHITE_VECTOR;
     }
 
     public boolean canBePromoted(){
-        return position.getY() == 7 || position.getY() == 0;
+        return position.getY() == WHITE_PROMOTION_Y || position.getY() == BLACK_PROMOTION_Y;
     }
 
     private void checkPawnMoves() {
-        for (Point other : pawnMoveMatrix) {
+        for (Point other : PAWN_MOVE_MATRIX) {
             Piece obstacle;
             Point tester = new Point(position);
             tester.translate((int) other.getX(), (int) other.getY() * vector);
@@ -41,7 +45,7 @@ public class Pawn extends FirstMovePiece {
     }
 
     private void checkPawnEats() {
-        for (Point other : pawnEatMatrix) {
+        for (Point other : PAWN_EAT_MATRIX) {
             Piece obstacle;
             Point tester = new Point(position);
             tester.translate((int) other.getX(), (int) other.getY() * vector);
@@ -53,7 +57,6 @@ public class Pawn extends FirstMovePiece {
             }
         }
     }
-
 
     @Override
     public void calculatePossibleMoves() {

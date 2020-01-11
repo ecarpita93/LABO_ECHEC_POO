@@ -17,10 +17,6 @@ public class ChessBoard {
     private static final int BOARD_X = 8;
     private static final int BOARD_Y = 8;
 
-
-    private ArrayList<Point> checkPath;
-
-
     public ChessBoard() {
         players = new ChessPlayer[]{new ChessPlayer(), new ChessPlayer()};
         game_board = new Piece[BOARD_X][BOARD_Y];
@@ -128,11 +124,6 @@ public class ChessBoard {
     public void removePieceList(Piece piece) {
         players[piece.getPlayer().ordinal()].removePieceList(piece);
     }
-
-//    public void calculateCheckPath(Piece king_under_check, Piece opponent_piece){
-//        checkPath.add(new Point((int)opponent_piece.getPosition().getX(), (int)opponent_piece.getPosition().getY())); // the first value is the same as the origin
-//    }
-
 
     public ArrayList<Piece> getPlayerPieces(PlayerColor player) {
         return players[player.ordinal()].getPieces();

@@ -9,19 +9,18 @@ import java.util.ArrayList;
 
 public abstract class Piece {
 
-    protected ChessBoard chessboard;
-    public PlayerColor player;       // Couleur blanc ou noir
-    public PieceType piece_type;     // Type de la pièce
-    public Point position;           // Position de la pièce
+    ChessBoard chessboard;
+    PlayerColor player;       // Couleur blanc ou noir
+    PieceType piece_type;     // Type de la pièce
+    Point position;           // Position de la pièce
     ArrayList<Point> possible_moves;
     ArrayList<Point> possible_eats;
 
-    private Point[] diagonalMatrix = {new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1)};
-    private Point[] verticalMatrix = {new Point(0, 1), new Point(0, -1)};
-    private Point[] horizontalMatrix = {new Point(1, 0), new Point(-1, 0)};
+    private static final Point[] DIAGONAL_MATRIX = {new Point(1, 1), new Point(1, -1), new Point(-1, -1), new Point(-1, 1)};
+    private static final Point[] VERTICAL_MATRIX = {new Point(0, 1), new Point(0, -1)};
+    private static final Point[] HORIZONTAL_MATRIX = {new Point(1, 0), new Point(-1, 0)};
 
-    // Constructeur
-    public Piece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
+    Piece(ChessBoard chessboard, PlayerColor player, PieceType piece_type, Point position) {
         this.chessboard = chessboard;
         this.player = player;
         this.piece_type = piece_type;
@@ -32,13 +31,21 @@ public abstract class Piece {
         addPieceIntoGame();
     }
 
+    public void calculatePossibleMoves() {
+        resetMovesArrays();
+    }
+
+    public boolean canMoveTo(int toX, int toY) {
+        return findInArray(possible_moves, toX, toY);
+    }
+
+    public boolean canEatTo(int toX, int toY) {
+        return findInArray(possible_eats, toX, toY);
+    }
+
     private void resetMovesArrays() {
         possible_moves.clear();
         possible_eats.clear();
-    }
-
-    public void calculatePossibleMoves() {
-        resetMovesArrays();
     }
 
     private boolean findInArray(ArrayList<Point> possible_goes, int toX, int toY) {
@@ -50,13 +57,9 @@ public abstract class Piece {
         return false;
     }
 
-    public boolean canMoveTo(int toX, int toY) {
-        return findInArray(possible_moves, toX, toY);
-    }
-
-    public boolean canEatTo(int toX, int toY) {
-        return findInArray(possible_eats, toX, toY);
-
+    private void addPieceIntoGame() {
+        chessboard.addPieceList(this);
+        chessboard.setPieceAtPosition(this, (int) position.getX(), (int) position.getY());
     }
 
     public void removePieceFromGame() {
@@ -65,21 +68,16 @@ public abstract class Piece {
         chessboard.removePieceList(this);
     }
 
-    public void addPieceIntoGame() {
-        chessboard.addPieceList(this);
-        chessboard.setPieceAtPosition(this, (int) position.getX(), (int) position.getY());
-    }
-
     void checkHorizontalMovesAndEats() {
-        checkMovesAndEatsMatrixRecursive(horizontalMatrix);
+        checkMovesAndEatsMatrixRecursive(HORIZONTAL_MATRIX);
     }
 
     void checkVerticalMovesAndEats() {
-        checkMovesAndEatsMatrixRecursive(verticalMatrix);
+        checkMovesAndEatsMatrixRecursive(VERTICAL_MATRIX);
     }
 
     void checkDiagonalMovesAndEats() {
-        checkMovesAndEatsMatrixRecursive(diagonalMatrix);
+        checkMovesAndEatsMatrixRecursive(DIAGONAL_MATRIX);
     }
 
     private void checkMovesAndEatsMatrixRecursive(Point[] otherRecursiveMatrix) {
@@ -127,7 +125,6 @@ public abstract class Piece {
         return possible_eats;
     }
 
-    // Getters Setters - tous mis par defaut - à corriger
     public PlayerColor getPlayer() {
         return player;
     }
@@ -138,14 +135,6 @@ public abstract class Piece {
 
     public Point getPosition() {
         return position;
-    }
-
-    public void setPlayer(PlayerColor player) {
-        this.player = player;
-    }
-
-    public void setPiece_type(PieceType piece_type) {
-        this.piece_type = piece_type;
     }
 
     public void setPosition(Point position) {

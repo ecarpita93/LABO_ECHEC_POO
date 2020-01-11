@@ -13,53 +13,67 @@ public class ChessPlayer {
     private ArrayList<Piece> pieces;
     private boolean check;
 
-    public ChessPlayer() {
+    ChessPlayer() {
         pieces = new ArrayList<>();
     }
 
-    public void clearPiecesList() {
+    void clearPiecesList() {
         pieces.clear();
         little_castling_rook = null;
         big_castling_rook = null;
         king = null;
     }
 
-    public void addPieceList(Piece piece) {
-            pieces.add(piece);
+    void addPieceList(Piece piece) {
+        pieces.add(piece);
     }
 
-    public void removePieceList(Piece piece) {
-            pieces.remove(piece);
+    void removePieceList(Piece piece) {
+        pieces.remove(piece);
     }
 
-    public ArrayList<Piece> getPieces() {
+    ArrayList<Piece> getPieces() {
         return pieces;
     }
 
-    public Piece getKing() {
+    Piece getKing() {
         return king;
     }
 
-    public void setKing(FirstMovePiece king) {
+    void setKing(FirstMovePiece king) {
         this.king = king;
     }
 
-    public void setLittleCastlingRook(FirstMovePiece little_castling_Rook) {
+    void setLittleCastlingRook(FirstMovePiece little_castling_Rook) {
         this.little_castling_rook = little_castling_Rook;
     }
 
-    public void setBigCastlingRook(FirstMovePiece big_castling_Rook) {
+    void setBigCastlingRook(FirstMovePiece big_castling_Rook) {
         this.big_castling_rook = big_castling_Rook;
     }
 
-    public boolean getCheck() {
+    boolean getCheck() {
         return check;
     }
 
-    public void setCheck(boolean check) {
+    void setCheck(boolean check) {
         this.check = check;
     }
 
+
+    boolean areLittleCastlingPiecesInPosition() {
+        if (king.getFirstMove()) {
+            return little_castling_rook.getFirstMove();
+        }
+        return false;
+    }
+
+    boolean areBigCastlingPiecesInPosition() {
+        if (king.getFirstMove()) {
+            return big_castling_rook.getFirstMove();
+        }
+        return false;
+    }
 
     public FirstMovePiece getLittleCastlingRook() {
         return little_castling_rook;
@@ -69,18 +83,5 @@ public class ChessPlayer {
         return big_castling_rook;
     }
 
-    public boolean areLittleCastlingPiecesInPosition() {
-        if (king.getFirstMove()){
-            return little_castling_rook.getFirstMove();
-        }
-        return false;
-    }
-
-    public boolean areBigCastlingPiecesInPosition() {
-        if (king.getFirstMove()){
-            return big_castling_rook.getFirstMove();
-        }
-        return false;
-    }
 
 }
