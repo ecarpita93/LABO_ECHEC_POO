@@ -4,6 +4,7 @@ import chess.ChessController;
 import chess.ChessView;
 import chess.PieceType;
 import chess.PlayerColor;
+import chess.views.console.ConsoleView;
 import engine.chessElements.ChessBoard;
 import engine.chessPieces.King;
 import engine.chessPieces.Pawn;
@@ -21,25 +22,21 @@ public class GameController implements ChessController {
     private Stack game_history;
     private ChessView view;
     private ChessBoard chessboard;
-    private final Promotion[] promotion_possibilities = new Promotion[]{new Promotion(PieceType.QUEEN),
-                                                                    new Promotion(PieceType.BISHOP),
-                                                                    new Promotion(PieceType.ROOK),
-                                                                    new Promotion(PieceType.KNIGHT)};
-
     private Piece piece_to_be_eliminated_if_valid_move;
+    private final Promotion[] promotion_possibilities = new Promotion[]{new Promotion(PieceType.QUEEN),
+                                                                        new Promotion(PieceType.BISHOP),
+                                                                        new Promotion(PieceType.ROOK),
+                                                                        new Promotion(PieceType.KNIGHT)};
 
-    public GameController() {
-        chessboard = new ChessBoard();
-    }
-
-    public void initGame() {
+    private void initGame() {
         game_turn = 0;
+        chessboard = new ChessBoard();
         piece_to_be_eliminated_if_valid_move = null;
         chessboard.setView(view);
         chessboard.initStandardBoard();
     }
 
-    public void endGame() {
+    private void endGame() {
         chessboard.clearGameBoard();
         chessboard.clearPlayers();
     }
@@ -200,26 +197,28 @@ public class GameController implements ChessController {
 
     @Override
     public void newGame() {
-        endGame();
+       if (chessboard != null) {
+           endGame();
+       }
         initGame();
     }
 
 
-     public class Promotion implements ChessView.UserChoice {
+    public class Promotion implements ChessView.UserChoice {
 
         private PieceType promote_to;
 
-        public Promotion (PieceType possible_promotion){
+        Promotion(PieceType possible_promotion) {
             promote_to = possible_promotion;
         }
 
-        public PieceType getPromoteTo() {
+        PieceType getPromoteTo() {
             return promote_to;
         }
 
         @Override
         public String textValue() {
-            return promote_to.toString();
+            return promote_to.name();
         }
     }
 

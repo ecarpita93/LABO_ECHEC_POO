@@ -58,7 +58,7 @@ public class ChessBoard {
         piece = new King(this, PlayerColor.WHITE, PieceType.KING, new Point(4, 0));
 
         for (int i = 0; i < 8; i++) {
-            piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
+           piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
         }
 
         piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7));
@@ -77,7 +77,7 @@ public class ChessBoard {
         piece = new King(this, PlayerColor.BLACK, PieceType.KING, new Point(4, 7));
 
         for (int i = 0; i < 8; i++) {
-             piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
+           piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
         }
 
         updateBoardMoves();
@@ -196,10 +196,13 @@ public class ChessBoard {
         switch(promoteTo){
             case ROOK:
                 piece = new Rook(this, current_player, PieceType.ROOK, position);
+                break;
             case BISHOP:
                 piece = new Bishop(this, current_player, PieceType.BISHOP, position);
+                break;
             case KNIGHT:
                 piece = new Knight(this, current_player, PieceType.KNIGHT, position);
+                break;
             case QUEEN:
             default:
                 piece = new Queen(this, current_player, PieceType.QUEEN, position);
