@@ -22,7 +22,7 @@ public class Pawn extends FirstMovePiece {
         vector = this.player == PlayerColor.BLACK ? BLACK_VECTOR : WHITE_VECTOR;
     }
 
-    public boolean canBePromoted(){
+    public boolean canBePromoted() {
         return position.getY() == WHITE_PROMOTION_Y || position.getY() == BLACK_PROMOTION_Y;
     }
 
