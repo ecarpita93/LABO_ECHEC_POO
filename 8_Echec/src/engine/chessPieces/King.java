@@ -10,8 +10,8 @@ import java.awt.*;
 public class King extends FirstMovePiece {
 
     private static final Point[] KING_MOVE_MATRIX = {new Point(0, 1), new Point(0, -1), new Point(1, 0), new Point(-1, 0), new Point(1, -1), new Point(-1, 1), new Point(1, 1), new Point(-1, -1)};
-    private static final Point[] KING_BIG_CASTLING_MATRIX = {new Point(-3, 0)};
-    private static final Point[] KING_LITTLE_CASTLING_MATRIX = {new Point(2, 0)};
+    private static final Point[] KING_BIG_CASTLING_MATRIX = {new Point(-1, 0),new Point(-2, 0),new Point(-3, 0)};
+    private static final Point[] KING_LITTLE_CASTLING_MATRIX = {new Point(1, 0),new Point(2, 0)};
     private static final int BIG_CASTLING_OFFSET = 2;
     private static final int LITTLE_CASTLING_OFFSET = 1;
 
@@ -36,17 +36,34 @@ public class King extends FirstMovePiece {
         return LITTLE_CASTLING_OFFSET;
     }
 
+//    void checkCastlingMatrix(Point[] otherMatrix) {
+//        for (Point other : otherMatrix) {
+//            Piece obstacle;
+//            Point tester = new Point(position);
+//
+//            tester.translate((int) other.getX(), (int) other.getY());
+//            if (chessboard.checkPositionInBoardLimits(tester)) {
+//                obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
+//                if (obstacle == null) {
+//                    if (chessboard.isPieceInDangerAtPosition())
+//                    possible_moves.add(new Point(tester));
+//                }
+//            }
+//        }
+//    }
+
+
     @Override
     public void calculatePossibleMoves() {
         super.calculatePossibleMoves();
         checkMovesAndEatsMatrix(KING_MOVE_MATRIX);
 
         if (chessboard.areBigCastlingPiecesInPosition(player)) {
-            checkMovesAndEatsMatrix(KING_BIG_CASTLING_MATRIX);
+            //checkMovesAndEatsMatrix(KING_BIG_CASTLING_MATRIX);
         }
 
         if (chessboard.areLittleCastlingPiecesInPosition(player)) {
-            checkMovesAndEatsMatrix(KING_LITTLE_CASTLING_MATRIX);
+            //checkMovesAndEatsMatrix(KING_LITTLE_CASTLING_MATRIX);
         }
     }
 

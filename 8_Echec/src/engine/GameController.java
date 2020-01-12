@@ -1,3 +1,16 @@
+/***********************************************************************************************************************
+ *
+ * Auteurs:    Edoardo Carpita - Dimitri Lambert
+ * Date:      12-01-2020
+ *
+ * Projet: Laboratoire POO1 - Implementation jeu d'echec
+ * Fichier: GameController.java
+ * Brief: fichier principal apres le main de gestion du jeux; ils s'occupe de la gestion mechaniques du jeux tels que
+ *        les mouvements, les prises, les checks et leurs executions.
+ *
+ *
+ **********************************************************************************************************************/
+
 package engine;
 
 import chess.ChessController;
@@ -13,43 +26,32 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- *
- * Class Game Controller
- * Cette classe s'occupe de la gestion des mechaniques du jeux tels que les mouvements, les prises, les checks et
- * leurs executions
- *
- *
- *
+ * Game Controller:
+ * Cette classe s'occupe de la gestion des
  */
 public class GameController implements ChessController {
 
-    private int game_turn;
-    private PlayerColor current_player;
-    private PlayerColor other_player;
+    private int game_turn;                                 // indique le numero de tour courant et utilisé aussi pour la gestion des joueurs
+    private PlayerColor current_player;                    // indique le joueur qui va jouer ce tour
+    private PlayerColor other_player;                      // indique le joueur adversaire au joueur_courant
     private ChessView view;
     private ChessBoard chessboard;
     private Piece piece_to_be_eliminated_if_valid_move;
-    private boolean en_passant_move;
-    private int en_passant_vector;
+    private boolean en_passant_move;                       // indique si on est en train d'effectuer un en passant aux fonctions
+    private int en_passant_vector;                         // offset de calcul pour la position des prise par en passant
 
-    private static final Point OUT_OF_THE_GAME = new Point (-30,-30);
-    private static final Promotion[] promotion_possibilities = new Promotion[]{new Promotion(PieceType.QUEEN),
+    private static final Point OUT_OF_THE_GAME = new Point (-30,-30);                                        // position temporaire arbitraire en dehors du jeu
+    private static final Promotion[] promotion_possibilities = new Promotion[]{new Promotion(PieceType.QUEEN),    // liste des promotions disponibles pour les pions à promouvoir
                                                                                 new Promotion(PieceType.BISHOP),
                                                                                 new Promotion(PieceType.ROOK),
                                                                                 new Promotion(PieceType.KNIGHT)};
 
-    private void initGame() {
-        game_turn = 0;
-        chessboard = new ChessBoard();
-        piece_to_be_eliminated_if_valid_move = null;
-        en_passant_move = false;
-        chessboard.setView(view);
-        chessboard.initStandardBoard();
-    }
-
-    private void endGame() {
-        chessboard.clearGameBoard();
-        chessboard.clearPlayers();
+    /**
+     * Mets à jours selon la le tour courant qui vas jouer ce tour, si le joueur Blanc ou Noir et indique l'autre comme l'adversaire
+     */
+    private void setPlayersForThisTurn(){
+        current_player = PlayerColor.values()[game_turn % 2];
+        other_player = PlayerColor.values()[(game_turn + 1) % 2];
     }
 
     /******************************* Fonctions de verifications (type check) ******************************************/
@@ -95,8 +97,14 @@ public class GameController implements ChessController {
         }
     }
 
+    /**
+     * Fonction qui s'occupe de verifier si le pion va effectuer un mouvement de type double etenregistre cette
+     * information dans un boolean de la piece meme
+     * @param pawn pion à verifier
+     * @param toY la position Y finale pour calculer le offset de position
+     */
     private void checkForPawnDoubleStart(Pawn pawn, int toY) {
-            pawn.hasDoubleStart(toY);
+            pawn.hasDoubleStarted(toY);
     }
 
     /**
@@ -123,6 +131,26 @@ public class GameController implements ChessController {
     }
 
     /******************************* Fonctions de actuation (type do) *************************************************/
+
+    /**
+     * Fonction qui s'occupe de l'initialisation des composantes pour un nouveau jeu
+     */
+    private void doInitGame() {
+        game_turn = 0;
+        chessboard = new ChessBoard();
+        piece_to_be_eliminated_if_valid_move = null;
+        en_passant_move = false;
+        chessboard.setView(view);
+        chessboard.initStandardBoard();
+    }
+
+    /**
+     * Fonction qui s'occupe du nettoyage de la board à la fin d'un jeu
+     */
+    private void doEndGame() {
+        chessboard.clearGameBoard();
+        chessboard.clearPlayers();
+    }
 
     /**
      * Fonction qui permet d'effectuer un coup de type en passant. Ce qu'on fait en faite c'est de signaler qu'on a mange
@@ -269,48 +297,66 @@ public class GameController implements ChessController {
         return doMove(piece_to_move, fromX, fromY, toX, toY);
     }
 
-
+    /**
+     * Fonction qui vas faire partir le jeux
+     * @param view la vue à utiliser
+     */
     @Override
     public void start(ChessView view) {
         this.view = view;
         this.view.startView();
-        initGame();
+        doInitGame();
     }
 
+    /**
+     * Fonction qui "effectue" le mouvement de pieces (via des appels aux fonctions de type do ci dessus).
+     *
+     * @param fromX la position X  de la piece avant le mouvement
+     * @param fromY la position Y  de la piece avant le mouvement
+     * @param toX la position X que la piece va prendre apres le mouvement si valide
+     * @param toY la position Y que la piece va prendre apres le mouvement si valide
+     * @return true si le mouvement a ete effectué, false si le mouvement n'as pas pu etre effectué
+     */
     @Override
     public boolean move(int fromX, int fromY, int toX, int toY) {
 
-        current_player = PlayerColor.values()[game_turn % 2];
-        other_player = PlayerColor.values()[(game_turn + 1) % 2];
+        setPlayersForThisTurn();                        // mise à jour des joueurs au debut de chaque mouvement
 
         Piece piece_to_move = chessboard.getPieceAtPosition(fromX, fromY);
         Piece piece_at_new_position = chessboard.getPieceAtPosition(toX, toY);
 
-        if (piece_to_move != null && piece_to_move.getPlayer() == current_player) {
+        if (piece_to_move != null && piece_to_move.getPlayer() == current_player) {  // si la piece à la position de depart voulue existe et appartien au joueur de ce tour
 
-            if (piece_at_new_position != null) {
-                if (piece_to_move.canEatTo(toX, toY)) {
+            if (piece_at_new_position != null) {                                     // s'il y a deja une autre piece à la case d'arrivé
+                if (piece_to_move.canEatTo(toX, toY)) {                              // on verifie que cette position d 'arrivé a ete bien enregistre comme position valide de la piece
                     return doMoveAndEat(piece_to_move, piece_at_new_position, fromX, fromY, toX, toY);
                 }
             } else {
-                if (piece_to_move.canMoveTo(toX, toY)) {
+                if (piece_to_move.canMoveTo(toX, toY)) {                             // sinon on s'occupe seulement de bouger la piece normalement si la position est valide aussi
                     return doMove(piece_to_move, fromX, fromY, toX, toY);
                 }
             }
-
         }
         return false;
     }
 
+    /**
+     * Fonction qui mets en place le nouveau jeu via des appels aux fonctions de type do
+     */
     @Override
     public void newGame() {
-       if (chessboard != null) {
-           endGame();
+       if (chessboard != null) {    // si la board n'est pas nulle signifie qu'un jeu etait deja en cours
+           doEndGame();             // on procede au nettoyage de la board avant de commencer un nouveau jeu
        }
-        initGame();
+        doInitGame();
     }
 
 
+    /**
+     * Promotion:
+     * Implementation de la classe interne Promotion à utiliser quand on va
+     * promouvoir un pion
+     */
     public static class Promotion implements ChessView.UserChoice {
 
         private PieceType promote_to;
@@ -321,6 +367,11 @@ public class GameController implements ChessController {
 
         PieceType getPromoteTo() {
             return promote_to;
+        }
+
+        @Override
+        public String toString(){
+            return promote_to.name();
         }
 
         @Override

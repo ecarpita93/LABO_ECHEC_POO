@@ -31,7 +31,7 @@ public class Pawn extends FirstMovePiece {
         return position.getY() == WHITE_PROMOTION_Y || position.getY() == BLACK_PROMOTION_Y;
     }
 
-    public void hasDoubleStart(int toY) {
+    public void hasDoubleStarted(int toY) {
         double_start = (Math.abs(position.getY() - toY) == DOUBLE_START_OFFSET);
     }
 
