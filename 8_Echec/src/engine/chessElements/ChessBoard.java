@@ -142,13 +142,6 @@ public class ChessBoard {
         this.view = view;
     }
 
-    public void setCheck(PlayerColor player_under_check, boolean check) {
-        players[player_under_check.ordinal()].setCheck(check);
-    }
-
-    public boolean getCheck(PlayerColor player) {
-        return players[player.ordinal()].getCheck();
-    }
 
     public boolean isPieceInDangerAtPosition(Point piece_in_danger_position, ArrayList<Piece> other_player_pieces) {
 

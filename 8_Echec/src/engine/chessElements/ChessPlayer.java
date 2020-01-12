@@ -11,7 +11,6 @@ public class ChessPlayer {
     private FirstMovePiece little_castling_rook;
     private FirstMovePiece big_castling_rook;
     private ArrayList<Piece> pieces;
-    private boolean check;
 
     ChessPlayer() {
         pieces = new ArrayList<>();
@@ -51,15 +50,6 @@ public class ChessPlayer {
     void setBigCastlingRook(FirstMovePiece big_castling_Rook) {
         this.big_castling_rook = big_castling_Rook;
     }
-
-    boolean getCheck() {
-        return check;
-    }
-
-    void setCheck(boolean check) {
-        this.check = check;
-    }
-
 
     boolean areLittleCastlingPiecesInPosition() {
         if (king.getFirstMove()) {

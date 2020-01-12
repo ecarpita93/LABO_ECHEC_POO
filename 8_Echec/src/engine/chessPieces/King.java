@@ -29,6 +29,13 @@ public class King extends FirstMovePiece {
         return (Math.abs(position.getX() - toX) > LITTLE_CASTLING_OFFSET);
     }
 
+    public static int getBigCastlingOffset() {
+        return BIG_CASTLING_OFFSET;
+    }
+
+    public static int getLittleCastlingOffset() {
+        return LITTLE_CASTLING_OFFSET;
+    }
 
     @Override
     public void calculatePossibleMoves() {
@@ -42,6 +49,7 @@ public class King extends FirstMovePiece {
         if (chessboard.areLittleCastlingPiecesInPosition(player)) {
             checkMovesAndEatsMatrix(KING_LITTLE_CASTLING_MATRIX);
         }
-
     }
+
+
 }

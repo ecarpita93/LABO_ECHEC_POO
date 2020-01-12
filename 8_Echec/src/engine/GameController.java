@@ -67,22 +67,14 @@ public class GameController implements ChessController {
     /**
      * Fonction qui s'occupe de regarder si apres un mouvement, le roi adversaire de la piece qui a bougé est resté dans
      * une situation dangereuse. Permet de definir le check et signale à la view si c'est le cas.
-     * @return true si le roi est condition de danger, false si le roi est pas en danger
      */
-    private boolean checkForEnemyCheck() {
+    private void checkForEnemyCheck() {
         Piece other_player_king = chessboard.getPlayerKing(other_player);
         ArrayList<Piece> current_player_pieces = chessboard.getPlayerPieces(current_player);
 
-
         if (chessboard.isPieceInDangerAtPosition(other_player_king.getPosition(), current_player_pieces)) {
             view.displayMessage(other_player + " king is in check!");
-            chessboard.setCheck(other_player, true);
-            return true;
         }
-
-        chessboard.setCheck(other_player, false);
-        return false;
-
     }
 
     /**
@@ -114,6 +106,10 @@ public class GameController implements ChessController {
     /******************************* Fonctions de actuation (type do) *************************************************/
 
 
+    /**
+     * Fonction qui s'occupe de promouvoir les pions par rapport aux choix de l'utilisateur
+     * @param pawn_to_promote pion à promouvoir
+     */
     private void doPromotion(Pawn pawn_to_promote) {
         Promotion choice = view.askUser("Pawn promotion", "How should be promoted your pawn? ", promotion_possibilities);
         Point position = pawn_to_promote.getPosition();
@@ -121,20 +117,38 @@ public class GameController implements ChessController {
         chessboard.addPromotedPiece(current_player, choice.getPromoteTo(), position);
     }
 
+    /**
+     * Fonction qui s'occupe d'effectuer le gran roque (et donc de bouger la tour si le roi effectue ce mouvement)
+     * @param king_castling le roi qui effectue le grand roque
+     */
     private void doBigCastling(King king_castling) {
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getBigCastlingRook();
-        doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() - 2, (int) king_castling.getPosition().getY());
-        game_turn--;
-
+        if (doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() - king_castling.getBigCastlingOffset(), (int) king_castling.getPosition().getY())) {
+            game_turn--;  // on effectue un double mouvement donc si on arrive à le faire on doit "reculer" d'un tour pour rester synchrones
+        }
     }
 
+    /**
+     * Fonction qui s'occupe d'effectuer le petit roque (et donc de bouger la tour si le roi effectue ce mouvement)
+     * @param king_castling le roi qui effectue le petit roque
+     */
     private void doLittleCastling(King king_castling) {
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getLittleCastlingRook();
-        doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() + 1, (int) king_castling.getPosition().getY());
-        game_turn--;
+        if (doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() + king_castling.getLittleCastlingOffset(), (int) king_castling.getPosition().getY())) {
+            game_turn--; // on effectue un double mouvement donc si on arrive à le faire on doit "reculer" d'un tour pour rester synchrones
+        }
     }
 
 
+    /**
+     * Fonction qui nous permet de retourner à l'etat initial avant un mouvement si ce mouvement à été recalculé comme invalide
+     * si les conditions Roi du joueur sont evalués comme dangereuses apres ce meme mouvement
+     * @param piece_to_move piece à restaurer à sa place initiale
+     * @param fromX la position X de la piece temporairement eliminé du jeux (s'il y en avait une)
+     * @param fromY la position Y de la piece temporairement eliminé du jeux (s'il y en avait une)
+     * @param toX la position X originale de la piece avant le mouvement
+     * @param toY la position Y originale de la piece avant le mouvement
+     */
     private void unDoMove(Piece piece_to_move, int fromX, int fromY, int toX, int toY) {
 
         chessboard.removePieceFromPosition((int) piece_to_move.getPosition().getX(), (int) piece_to_move.getPosition().getY());
@@ -148,41 +162,65 @@ public class GameController implements ChessController {
         chessboard.updateBoardMoves();
     }
 
+    /**
+     * Fonction qui s'occupe d'effectuer le vrai mouvement sur le board et verifier toutes les conditions avants et apres
+     * chaque mouvement effectif pour verifier si d'autres actions sont necessaires ou si le mouvement est dangereux
+     * @param piece_to_move piece qui va effectuer le changement de position
+     * @param fromX la position X originale de la piece avant le mouvement
+     * @param fromY la position Y originale de la piece avant le mouvement
+     * @param toX la position X que la piece va prendre apres le mouvement si valide
+     * @param toY la position Y que la piece va prendre apres le mouvement si valide
+     * @return true si le mouvement a ete valide et effectue, false dans le cas contraire
+     */
     private boolean doMove(Piece piece_to_move, int fromX, int fromY, int toX, int toY) {
 
         chessboard.removePieceFromPosition((int) piece_to_move.getPosition().getX(), (int) piece_to_move.getPosition().getY());
 
+        /* -------- Verifications avant d'effectuer le mouvement ------- */
         if (piece_to_move instanceof King) {
-            checkForCastling((King) piece_to_move, toX);
+            checkForCastling((King) piece_to_move, toX);  // on regarde si on veut faire un roque
         }
 
+        /* -------- On effectue le mouvement --------------------------- */
         chessboard.setPieceAtPosition(piece_to_move, toX, toY);
 
+        /* -------- Verifications avec le mouvement -------------------- */
         if (piece_to_move instanceof Pawn) {
-            checkForPawnPromotion((Pawn) piece_to_move);
+            checkForPawnPromotion((Pawn) piece_to_move);  // on regarde si on peut promouvoir un pion
         }
 
-        chessboard.updateBoardMoves();
+        /* -------- Verifications apres le mouvement -------------------- */
+        chessboard.updateBoardMoves();                       // mise à jour de toutes les positions de toutes les pieces de la board
 
-        if (checkForFriendlyCheck()) {
-            unDoMove(piece_to_move, toX, toY, fromX, fromY);
-            return false;
+        if (checkForFriendlyCheck()) {                       // on regarde si le roi du joueur en cours à ete mis en danger par le mouvement
+            unDoMove(piece_to_move, toX, toY, fromX, fromY); // si c'est le cas le mouvement n'est pas valide et on doit restaurer la board
+            return false;                                    // à l'etat avant le mouvement
         } else {
 
-            if (piece_to_be_eliminated_if_valid_move != null) {
-                piece_to_be_eliminated_if_valid_move.removePieceFromGame();
+            if (piece_to_be_eliminated_if_valid_move != null) {               // si le mouvement est au contraire valide on regarde si on avait
+                piece_to_be_eliminated_if_valid_move.removePieceFromGame();   // sauve une piece et si oui on peut l'eliminier proprement du jeu
                 piece_to_be_eliminated_if_valid_move = null;
             }
 
-            if (checkForEnemyCheck()) {
-                chessboard.updateBoardMoves();
-            }
-
-            game_turn++;
+            checkForEnemyCheck();                             // on regarde si avec le mouvement qu'on a fait on a mis en danger le roi adversaire
+            game_turn++;                                      // on avance dans les tour du jeux
             return true;
         }
     }
 
+    /**
+     * Fonction qui s'occupe d'effectuer une "sauvegarde" en dehors de la board de la piece qui se trouve à la position
+     * future de la piece qui vas se deplacer. Ceci nous permettera de verifier la validite de la board a l'etat futur
+     * sans en faite perdre completement la piece a manger (qui est juste deplacé hors du jeux). Si le mouvement sera jugé
+     * comme non valide alors la piece pourra etre restauré a sa position d'origine via cette "sauvegarde"
+     * @param piece_to_move piece qui va effectuer le changement de position
+     * @param piece_to_eat piece a "sauver" qui vas etre elimine du jeux si le mouvement de l'autre piece sera valide
+     * @param fromX la position X originale de la piece avant le mouvement
+     * @param fromY la position Y originale de la piece avant le mouvement
+     * @param toX la position X que la piece va prendre apres le mouvement si valide
+     * @param toY la position Y que la piece va prendre apres le mouvement si valide
+     * @return
+     */
     private boolean doMoveAndEat(Piece piece_to_move, Piece piece_to_eat, int fromX, int fromY, int toX, int toY) {
         piece_to_be_eliminated_if_valid_move = piece_to_eat;
         piece_to_be_eliminated_if_valid_move.setPosition(OUT_OF_THE_GAME);

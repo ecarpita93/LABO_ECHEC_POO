@@ -61,10 +61,8 @@ public class Pawn extends FirstMovePiece {
     @Override
     public void calculatePossibleMoves() {
         super.calculatePossibleMoves();
-        if (!chessboard.getCheck(player)) {
             checkPawnMoves();
             checkPawnEats();
-        }
     }
 
 }
