@@ -21,7 +21,6 @@ public class King extends FirstMovePiece {
     }
 
     public boolean isBigCastling(int toX) {
-        System.out.println(position.getX() + " - " + toX + " = " + (Math.abs(position.getX() - toX)));
         return (Math.abs(position.getX() - toX) > BIG_CASTLING_OFFSET);
     }
 

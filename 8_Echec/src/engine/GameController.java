@@ -29,6 +29,8 @@ public class GameController implements ChessController {
     private ChessView view;
     private ChessBoard chessboard;
     private Piece piece_to_be_eliminated_if_valid_move;
+    private boolean en_passant_move;
+    private int en_passant_vector;
 
     private static final Point OUT_OF_THE_GAME = new Point (-30,-30);
     private static final Promotion[] promotion_possibilities = new Promotion[]{new Promotion(PieceType.QUEEN),
@@ -40,6 +42,7 @@ public class GameController implements ChessController {
         game_turn = 0;
         chessboard = new ChessBoard();
         piece_to_be_eliminated_if_valid_move = null;
+        en_passant_move = false;
         chessboard.setView(view);
         chessboard.initStandardBoard();
     }
@@ -92,10 +95,14 @@ public class GameController implements ChessController {
         }
     }
 
+    private void checkForPawnDoubleStart(Pawn pawn, int toY) {
+            pawn.hasDoubleStart(toY);
+    }
+
     /**
      * Fonction qui s'occupe de verifier si le pion est eligible pour une promotion avec une fonction auxiliaire dans pion.
      * Si c'est le cas on effectue la promotion avec une fonction de type do
-     * @param pawn
+     * @param pawn le pion à promouvoir eventuellemnt
      */
     private void checkForPawnPromotion(Pawn pawn) {
         if (pawn.canBePromoted()) {
@@ -103,8 +110,31 @@ public class GameController implements ChessController {
         }
     }
 
+    /**
+     * Fonction qui s'occupe de verifier si le pion qui est en train de bouger veut faire une prise en passant
+     * @param pawn le pion qui est en train de bouger
+     * @param toX position X destination du pion
+     * @param toY position Y destination du pion
+     */
+    private void checkForPawnEnPassant(Pawn pawn, int toX, int toY){
+        if (pawn.isDoingEnPassant(toX,toY)){
+            doEnPassant(toX,toY);
+        }
+    }
+
     /******************************* Fonctions de actuation (type do) *************************************************/
 
+    /**
+     * Fonction qui permet d'effectuer un coup de type en passant. Ce qu'on fait en faite c'est de signaler qu'on a mange
+     * une piece sans effectivement y aller dessus. La fonction doMove fera le reste
+     * @param toX position X finale de la piece qui vas faire le enpassant
+     * @param toY position Y finale de la piece qui vas faire le enpassant
+     */
+    private void doEnPassant(int toX, int toY){
+        en_passant_vector = current_player == PlayerColor.WHITE ? 1 : -1;    //le vecteur d'attaque vas etre different selon le joueur
+        piece_to_be_eliminated_if_valid_move = chessboard.getPieceAtPosition(toX,toY - en_passant_vector);
+        en_passant_move = true;
+    }
 
     /**
      * Fonction qui s'occupe de promouvoir les pions par rapport aux choix de l'utilisateur
@@ -181,6 +211,11 @@ public class GameController implements ChessController {
             checkForCastling((King) piece_to_move, toX);  // on regarde si on veut faire un roque
         }
 
+        if (piece_to_move instanceof Pawn){
+            checkForPawnDoubleStart((Pawn) piece_to_move, toY);      // on regarde si on peut promouvoir un pion
+            checkForPawnEnPassant((Pawn) piece_to_move, toX, toY);   // ou s'il est en train d'effectuer un en passant
+        }
+
         /* -------- On effectue le mouvement --------------------------- */
         chessboard.setPieceAtPosition(piece_to_move, toX, toY);
 
@@ -192,6 +227,7 @@ public class GameController implements ChessController {
         /* -------- Verifications apres le mouvement -------------------- */
         chessboard.updateBoardMoves();                       // mise à jour de toutes les positions de toutes les pieces de la board
 
+
         if (checkForFriendlyCheck()) {                       // on regarde si le roi du joueur en cours à ete mis en danger par le mouvement
             unDoMove(piece_to_move, toX, toY, fromX, fromY); // si c'est le cas le mouvement n'est pas valide et on doit restaurer la board
             return false;                                    // à l'etat avant le mouvement
@@ -199,6 +235,12 @@ public class GameController implements ChessController {
 
             if (piece_to_be_eliminated_if_valid_move != null) {               // si le mouvement est au contraire valide on regarde si on avait
                 piece_to_be_eliminated_if_valid_move.removePieceFromGame();   // sauve une piece et si oui on peut l'eliminier proprement du jeu
+
+                if (en_passant_move){                                         // si on effectue un en passant il faut eliminer la piece
+                    view.displayMessage("En passant");                   // adversaire manuellement de la view
+                    chessboard.removePieceFromPosition(toX,toY- en_passant_vector);
+                    en_passant_move = false;
+                }
                 piece_to_be_eliminated_if_valid_move = null;
             }
 
