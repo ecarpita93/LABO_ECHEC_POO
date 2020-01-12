@@ -64,7 +64,7 @@ public abstract class Piece {
 
     public void removePieceFromGame() {
         System.out.println(piece_type + " has been eaten");
-        position = new Point(-1, -1);
+        position = new Point(-30, -30);
         chessboard.removePieceList(this);
     }
 
@@ -81,9 +81,9 @@ public abstract class Piece {
     }
 
     private void checkMovesAndEatsMatrixUntilNotPossible(Point[] otherRecursiveMatrix) {
+        Piece obstacle;
+        Point tester = new Point(position);
         for (Point other : otherRecursiveMatrix) {
-            Piece obstacle;
-            Point tester = new Point(position);
             do {
                 tester.translate((int) other.getX(), (int) other.getY());
                 if (chessboard.checkPositionInBoardLimits(tester)) {
@@ -101,10 +101,9 @@ public abstract class Piece {
     }
 
     void checkMovesAndEatsMatrix(Point[] otherMatrix) {
+        Piece obstacle;
+        Point tester = new Point(position);
         for (Point other : otherMatrix) {
-            Piece obstacle;
-            Point tester = new Point(position);
-
             tester.translate((int) other.getX(), (int) other.getY());
             if (chessboard.checkPositionInBoardLimits(tester)) {
                 obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
