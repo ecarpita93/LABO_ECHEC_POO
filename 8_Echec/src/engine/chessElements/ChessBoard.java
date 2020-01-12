@@ -54,7 +54,7 @@ public class ChessBoard {
         piece = new King(this, PlayerColor.WHITE, PieceType.KING, new Point(4, 0));
 
         for (int i = 0; i < 8; i++) {
-           piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
+         //  piece = new Pawn(this, PlayerColor.WHITE, PieceType.PAWN, new Point(i, 1));
         }
 
         piece = new Rook(this, PlayerColor.BLACK, PieceType.ROOK, new Point(0, 7));
@@ -73,7 +73,7 @@ public class ChessBoard {
         piece = new King(this, PlayerColor.BLACK, PieceType.KING, new Point(4, 7));
 
         for (int i = 0; i < 8; i++) {
-           piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
+         //  piece = new Pawn(this, PlayerColor.BLACK, PieceType.PAWN, new Point(i, 6));
         }
 
         updateBoardMoves();

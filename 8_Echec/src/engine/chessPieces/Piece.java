@@ -69,18 +69,18 @@ public abstract class Piece {
     }
 
     void checkHorizontalMovesAndEats() {
-        checkMovesAndEatsMatrixRecursive(HORIZONTAL_MATRIX);
+        checkMovesAndEatsMatrixUntilNotPossible(HORIZONTAL_MATRIX);
     }
 
     void checkVerticalMovesAndEats() {
-        checkMovesAndEatsMatrixRecursive(VERTICAL_MATRIX);
+        checkMovesAndEatsMatrixUntilNotPossible(VERTICAL_MATRIX);
     }
 
     void checkDiagonalMovesAndEats() {
-        checkMovesAndEatsMatrixRecursive(DIAGONAL_MATRIX);
+        checkMovesAndEatsMatrixUntilNotPossible(DIAGONAL_MATRIX);
     }
 
-    private void checkMovesAndEatsMatrixRecursive(Point[] otherRecursiveMatrix) {
+    private void checkMovesAndEatsMatrixUntilNotPossible(Point[] otherRecursiveMatrix) {
         for (Point other : otherRecursiveMatrix) {
             Piece obstacle;
             Point tester = new Point(position);
@@ -122,7 +122,7 @@ public abstract class Piece {
     }
 
     public ArrayList<Point> getPossibleMoves() {
-        return possible_eats;
+        return possible_moves;
     }
 
     public PlayerColor getPlayer() {
