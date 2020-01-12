@@ -81,9 +81,9 @@ public abstract class Piece {
     }
 
     private void checkMovesAndEatsMatrixUntilNotPossible(Point[] otherRecursiveMatrix) {
-        Piece obstacle;
-        Point tester = new Point(position);
         for (Point other : otherRecursiveMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
             do {
                 tester.translate((int) other.getX(), (int) other.getY());
                 if (chessboard.checkPositionInBoardLimits(tester)) {
@@ -101,9 +101,10 @@ public abstract class Piece {
     }
 
     void checkMovesAndEatsMatrix(Point[] otherMatrix) {
-        Piece obstacle;
-        Point tester = new Point(position);
         for (Point other : otherMatrix) {
+            Piece obstacle;
+            Point tester = new Point(position);
+
             tester.translate((int) other.getX(), (int) other.getY());
             if (chessboard.checkPositionInBoardLimits(tester)) {
                 obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());

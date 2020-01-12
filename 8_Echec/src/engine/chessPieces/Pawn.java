@@ -50,10 +50,9 @@ public class Pawn extends FirstMovePiece {
     }
 
     private void checkPawnMoves() {
-        Piece obstacle;
-        Point tester = new Point(position);
-
         for (Point other : PAWN_MOVE_MATRIX) {
+            Piece obstacle;
+            Point tester = new Point(position);
             tester.translate((int) other.getX(), (int) other.getY() * vector);
             if (chessboard.checkPositionInBoardLimits(tester)) {
                 obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
@@ -61,6 +60,7 @@ public class Pawn extends FirstMovePiece {
                     possible_moves.add(new Point(tester));
                 }
             }
+
             if (!this.getFirstMove()) {
                 break;
             }
@@ -68,10 +68,9 @@ public class Pawn extends FirstMovePiece {
     }
 
     private void checkPawnEats() {
-        Piece obstacle;
-        Point tester = new Point(position);
-
         for (Point other : PAWN_EAT_MATRIX) {
+            Piece obstacle;
+            Point tester = new Point(position);
             tester.translate((int) other.getX(), (int) other.getY() * vector);
             if (chessboard.checkPositionInBoardLimits(tester)) {
                 obstacle = chessboard.getPieceAtPosition((int) tester.getX(), (int) tester.getY());
