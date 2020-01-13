@@ -1,20 +1,35 @@
+/***********************************************************************************************************************
+ *
+ * Auteurs:    Edoardo Carpita - Dimitri Lambert
+ * Date:      12-01-2020
+ *
+ * Projet: Laboratoire POO1 - Implementation jeu d'echec
+ * Fichier: StudentChess.java
+ * Brief: fichier principal (main) qui s'occupe de l’ouverture du programme
+ *
+ *
+ **********************************************************************************************************************/
+
+
 import chess.ChessController;
 import chess.ChessView;
 import chess.views.console.ConsoleView;
 import chess.views.gui.GUIView;
 import engine.GameController;
 
-import tests.TestCase_DeLaPile;
-
 import static java.lang.System.exit;
 
 public class StudentChess {
 
+    /**
+     * Main du programme
+     * @param args prends un seul argument pour lancer le programme (GUI pour la version graphique, CON pour console)
+     */
     public static void main(String[] args) {
 
         boolean selected_GUI_type = false;
 
-        // 1. Gestion des arguments du programme
+        /* 1. Gestion des arguments du programme */
         if (args.length == 1) {
             switch (args[0]) {
                 case "GUI":
@@ -36,12 +51,12 @@ public class StudentChess {
             exit(0);
         }
 
-        // 2. Création du contrôleur pour gérer le jeu d’échec
+        /* 2. Création du contrôleur pour gérer le jeu d’échec */
         ChessController gameController = new GameController();
-        // 3. Création de la vue désirer
+        /* 3. Création de la vue desire */
         ChessView guiView = new GUIView(gameController);
         ConsoleView consoleView = new ConsoleView(gameController);
-        // 4. Lancement du jeu
+        /* 4. Lancement du jeu */
         if (selected_GUI_type) {
             gameController.start(guiView);
         } else {

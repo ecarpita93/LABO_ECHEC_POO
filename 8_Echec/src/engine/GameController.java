@@ -25,10 +25,6 @@ import engine.chessPieces.Piece;
 import java.awt.*;
 import java.util.ArrayList;
 
-/**
- * Game Controller:
- * Cette classe s'occupe de la gestion des
- */
 public class GameController implements ChessController {
 
     private int game_turn;                                 // indique le numero de tour courant et utilisé aussi pour la gestion des joueurs
@@ -247,19 +243,19 @@ public class GameController implements ChessController {
         /* -------- On effectue le mouvement --------------------------- */
         chessboard.setPieceAtPosition(piece_to_move, toX, toY);
 
-        /* -------- Verifications avec le mouvement -------------------- */
-        if (piece_to_move instanceof Pawn) {
-            checkForPawnPromotion((Pawn) piece_to_move);  // on regarde si on peut promouvoir un pion
-        }
-
-        /* -------- Verifications apres le mouvement -------------------- */
+        /* -------- mise à jour du board -------------------------------- */
         chessboard.updateBoardMoves();                       // mise à jour de toutes les positions de toutes les pieces de la board
 
+        /* -------- Verifications apres le mouvement -------------------- */
 
         if (checkForFriendlyCheck()) {                       // on regarde si le roi du joueur en cours à ete mis en danger par le mouvement
             unDoMove(piece_to_move, toX, toY, fromX, fromY); // si c'est le cas le mouvement n'est pas valide et on doit restaurer la board
             return false;                                    // à l'etat avant le mouvement
         } else {
+
+            if (piece_to_move instanceof Pawn) {
+                checkForPawnPromotion((Pawn) piece_to_move);  // on regarde si on peut promouvoir un pion
+            }
 
             if (piece_to_be_eliminated_if_valid_move != null) {               // si le mouvement est au contraire valide on regarde si on avait
                 piece_to_be_eliminated_if_valid_move.removePieceFromGame();   // sauve une piece et si oui on peut l'eliminier proprement du jeu
@@ -351,11 +347,9 @@ public class GameController implements ChessController {
         doInitGame();
     }
 
-
     /**
      * Promotion:
-     * Implementation de la classe interne Promotion à utiliser quand on va
-     * promouvoir un pion
+     * Implementation de la classe interne Promotion à utiliser quand on va promouvoir un pion
      */
     public static class Promotion implements ChessView.UserChoice {
 
