@@ -177,7 +177,7 @@ public class GameController implements ChessController {
      */
     private void doBigCastling(King king_castling) {
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getBigCastlingRook();
-        if (doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() - king_castling.getBigCastlingOffset(), (int) king_castling.getPosition().getY())) {
+        if (doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() - 1, (int) king_castling.getPosition().getY())) {
             game_turn--;  // on effectue un double mouvement donc si on arrive à le faire on doit "reculer" d'un tour pour rester synchrones
         }
     }
@@ -188,7 +188,8 @@ public class GameController implements ChessController {
      */
     private void doLittleCastling(King king_castling) {
         Piece rook = chessboard.getPlayers()[king_castling.getPlayer().ordinal()].getLittleCastlingRook();
-        if (doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() + king_castling.getLittleCastlingOffset(), (int) king_castling.getPosition().getY())) {
+        System.out.println("little");
+        if (doMove(rook, (int) rook.getPosition().getX(), (int) rook.getPosition().getY(), (int) king_castling.getPosition().getX() + 1, (int) king_castling.getPosition().getY())) {
             game_turn--; // on effectue un double mouvement donc si on arrive à le faire on doit "reculer" d'un tour pour rester synchrones
         }
     }

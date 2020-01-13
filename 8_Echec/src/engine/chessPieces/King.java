@@ -24,13 +24,13 @@ public class King extends FirstMovePiece {
     /************************************** Matrices de rotations du Roi **********************************************/
 
     private static final Point[] KING_MOVE_MATRIX = {new Point(0, 1), new Point(0, -1), new Point(1, 0), new Point(-1, 0), new Point(1, -1), new Point(-1, 1), new Point(1, 1), new Point(-1, -1)};
-    private static final Point[] KING_BIG_CASTLING_MATRIX = {new Point(-1, 0), new Point(-1, 0), new Point(-1, 0)};
+    private static final Point[] KING_BIG_CASTLING_MATRIX = {new Point(-1, 0), new Point(-1, 0)};
     private static final Point[] KING_LITTLE_CASTLING_MATRIX = {new Point(1, 0), new Point(1, 0)};
 
     /*******************************************************************************************************************/
 
     private static final int BIG_CASTLING_OFFSET = 2;     /*offesets utilises pour definir les roques*/
-    private static final int LITTLE_CASTLING_OFFSET = 1;
+    private static final int LITTLE_CASTLING_OFFSET = -2;
 
     /**
      * Constructeur de Roi, on ajoute au chessPlayer correspondant la reference sur cette piece
@@ -47,23 +47,23 @@ public class King extends FirstMovePiece {
     /**
      * Pendant un deplacement, pour comprendre si le Roi veut effectuer un grand roque on va
      * calculer le offset entre la position courante et la position future. Seulement un grand roque aura un offset
-     * strictement plus grand que 2
+     * strictement plus grand que 1
      * @param toX la position X future du roi qui est en train de se deplacer
      * @return true si la condition est vraie, false autrement
      */
     public boolean isBigCastling(int toX) {
-        return (Math.abs(position.getX() - toX) > BIG_CASTLING_OFFSET);
+        return (position.getX() - toX == BIG_CASTLING_OFFSET);
     }
 
     /**
      * Pendant un deplacement, pour comprendre si le Roi veut effectuer un grand roque on va
      * calculer le offset entre la position courante et la position future. Un peit roque aura un offset
-     * strictement plus grand que 1
+     * strictement plus grand que -1
      * @param toX la position X future du roi qui est en train de se deplacer
      * @return true si la condition est vraie, false autrement
      */
     public boolean isLittleCastling(int toX) {
-        return (Math.abs(position.getX() - toX) > LITTLE_CASTLING_OFFSET);
+        return (position.getX() - toX == LITTLE_CASTLING_OFFSET);
     }
 
     /**
@@ -95,6 +95,7 @@ public class King extends FirstMovePiece {
     private void checkCastlingMatrix(Point[] otherMatrix) {
         Piece obstacle;
         PlayerColor other_player = this.player == PlayerColor.BLACK ? PlayerColor.WHITE : PlayerColor.BLACK;
+        System.out.println(player);
         Point tester = new Point(position);
         for (int i = 0; i < otherMatrix.length; i++) {  /* la boucle for ici vas nous permettre de savoir quand on est au dernier point de la matrice */
             tester.translate((int) otherMatrix[i].getX(), (int) otherMatrix[i].getY());
@@ -105,6 +106,7 @@ public class King extends FirstMovePiece {
                         return; /* si la piece à la position courante sera en danger, le roque n est pas possible, et on arrete de verifier */
                     }
                     if (i == otherMatrix.length - 1) {  /* si on est la ca veut dire que les deplacements sont bons et on peut effectuer le roque */
+                        System.out.println(player + " :adding roque :" + tester);
                         possible_moves.add(new Point(tester));
                     }
                 } else {  /*dans le cas aussi d'un ostacel sur le parcours, le roque n est pas faisable */
